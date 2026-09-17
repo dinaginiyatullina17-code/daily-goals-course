@@ -744,11 +744,11 @@ button:focus-visible, input:focus-visible, textarea:focus-visible { outline-colo
 
 .goal-funnel { margin: 2.5rem 0; }
 .goal-funnel > h2 { margin: 0 0 1.5rem; text-align: center; font-size: clamp(1.7rem, 3vw, 2.5rem); }
-.funnel-stage { position: relative; display: flex; gap: 1rem; margin: 0 auto; padding: 1.25rem 1.4rem; border: 1px solid var(--ku-border); border-radius: var(--ku-radius-l); background: var(--ku-card); box-shadow: var(--ku-shadow-xs); }
-.funnel-goal { width: 100%; background: var(--ku-brand); color: var(--ku-brand-on); }
-.funnel-metrics { width: 94%; background: var(--ku-brand-soft); }
-.funnel-zones { width: 88%; }
-.funnel-tasks { width: 82%; background: var(--ku-surface); }
+.funnel-stage { position: relative; display: flex; gap: 1rem; margin: 0 auto; padding: 1.35rem clamp(2rem, 5vw, 4rem); border: 1px solid var(--ku-border); background: var(--ku-card); box-shadow: var(--ku-shadow-xs); clip-path: polygon(5% 0, 95% 0, 100% 100%, 0 100%); }
+.funnel-goal { width: 58%; background: var(--ku-brand); color: var(--ku-brand-on); }
+.funnel-metrics { width: 72%; background: var(--ku-brand-soft); }
+.funnel-zones { width: 86%; background: color-mix(in srgb, var(--ku-brand) 5%, var(--ku-card)); }
+.funnel-tasks { width: 100%; background: color-mix(in srgb, var(--ku-brand) 9%, var(--ku-surface)); }
 .funnel-number { display: grid; place-items: center; flex: 0 0 2.25rem; width: 2.25rem; height: 2.25rem; border-radius: 50%; background: var(--ku-contrast); color: var(--ku-contrast-on); font-weight: 800; }
 .funnel-stage h3 { margin: .25rem 0 .65rem; font-size: 1.15rem; }
 .funnel-stage p { margin: 0; line-height: 1.5; }
@@ -760,9 +760,14 @@ button:focus-visible, input:focus-visible, textarea:focus-visible { outline-colo
 .funnel-grid p { color: var(--ku-text-soft); font-size: .9rem; }
 .funnel-arrow { display: block; padding: .35rem 0; color: var(--ku-brand); text-align: center; font-size: 1.6rem; font-weight: 800; line-height: 1; }
 .goal-funnel blockquote { margin: 1.25rem auto 0; padding: 1rem 1.25rem; border-left: .25rem solid var(--ku-brand); background: var(--ku-surface); font-weight: 700; line-height: 1.55; }
+.shift-path-title { margin: 3.5rem 0 1.5rem; text-align: center; }
+.shift-path-title h2 { margin: 0; font-size: clamp(1.6rem, 3vw, 2.25rem); }
 
 @media (max-width: 680px) {
-  .funnel-stage, .funnel-goal, .funnel-metrics, .funnel-zones, .funnel-tasks { width: 100%; }
-  .funnel-stage { padding: 1rem; }
+  .funnel-goal { width: 76%; }
+  .funnel-metrics { width: 84%; }
+  .funnel-zones { width: 92%; }
+  .funnel-tasks { width: 100%; }
+  .funnel-stage { padding: 1rem 1.25rem; clip-path: polygon(3% 0, 97% 0, 100% 100%, 0 100%); }
   .funnel-grid { grid-template-columns: 1fr; }
 }
