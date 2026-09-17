@@ -16,7 +16,6 @@ const PROGRESS_VERSION = 9;
 let currentPage = 'home';
 let unlockedChapters = 1;
 let fadeObserver;
-let courseStarted = false;
 
 function navigateTo(pageId) {
   const target = document.getElementById(`page-${pageId}`);
@@ -32,9 +31,7 @@ function navigateTo(pageId) {
   PAGES.forEach(id => document.getElementById(`page-${id}`)?.classList.remove('active'));
   target.classList.add('active');
   currentPage = pageId;
-  const backButton = document.getElementById('course-back');
-  backButton.hidden = pageId === 'home';
-  backButton.setAttribute('aria-label', `Назад: ${CHAPTER_NAMES[PAGES[PAGES.indexOf(pageId) - 1]] || 'главная страница'}`);
+  if (pageId === 'smart') resetSmartMatching();
   window.scrollTo({ top: 0, behavior: 'instant' });
 
   const chapterIndex = requestedChapter;
@@ -44,11 +41,6 @@ function navigateTo(pageId) {
 
   applyHomeLocks();
   setTimeout(initFadeIn, 30);
-}
-
-function goToPreviousPage() {
-  const index = PAGES.indexOf(currentPage);
-  if (index > 0) navigateTo(PAGES[index - 1]);
 }
 
 function resetCourseInteractions() {
@@ -75,8 +67,6 @@ function resetCourseInteractions() {
 }
 
 function startCourse() {
-  if (courseStarted) { navigateTo('intro'); return; }
-  courseStarted = true;
   unlockedChapters = 1;
   resetCourseInteractions();
   try {
@@ -221,17 +211,17 @@ function answerChoice(button, isCorrect, feedbackId) {
     feedback.className = 'feedback-box show incorrect';
     feedback.innerHTML = copy?.incorrect || (feedbackId === 'calc-feedback'
       ? '<strong>Пока нет.</strong> Найди 20% от 150 000: умножь сумму на 20 и раздели на 100.'
-      : '<strong>Попробуй ещё раз.</strong> Сначала выясни причину отставания. Повторение плана или перераспределение задач могут помочь, но выбирать действие стоит после разговора с сотрудником.');
+      : '<strong>Попробуй ещё раз.</strong> Задача контроля — вовремя помочь, а не наказать или отложить проблему до конца смены.');
     setTimeout(() => button.classList.remove('wrong'), 650);
   }
 }
 
 const SMART_DETAILS = [
-  ['S · Specific', 'Назови конкретный результат. Например: продать пирожки с вишней, предлагая их к горячим напиткам.'],
-  ['M · Measurable', 'Укажи число, с которым сравнишь результат. Например: 15 пирожков.'],
-  ['A · Achievable', 'Сопоставь цель с возможностями сотрудника. Например: обычно он продаёт 10 пирожков за эти два часа; запас и поток Гостей позволяют продать ещё 5.'],
-  ['R · Relevant', 'Объясни вклад в общий результат. Например: продажа пирожков к напиткам помогает увеличить средний чек ресторана.'],
-  ['T · Time-bound', 'Назови срок. Например: с 9:00 до 11:00. В 11:00 вместе подведите итог.']
+  ['S · Specific', 'Цель называет конкретный результат и не оставляет места разным трактовкам.'],
+  ['M · Measurable', 'У результата есть число или другой показатель, по которому можно проверить выполнение.'],
+  ['A · Achievable', 'Цель амбициозна, но учитывает опыт и реальные возможности конкретного сотрудника.'],
+  ['R · Relevant', 'Индивидуальная цель сотрудника помогает выполнить общую цель ресторана.'],
+  ['T · Time-bound', 'У цели есть понятный срок или временной интервал.']
 ];
 
 function selectSmart(button, index) {
