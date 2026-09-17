@@ -58,6 +58,7 @@ function resetCourseInteractions() {
   document.querySelectorAll('.choice-grid, .choice-list').forEach(group => {
     delete group.dataset.answered;
     delete group.dataset.solved;
+    delete group.dataset.wrongAttempts;
     group.querySelectorAll('button').forEach(button => {
       button.disabled = false;
       button.classList.remove('correct', 'wrong');
@@ -113,10 +114,10 @@ function hasAnsweredChapterTests(pageId) {
   if (!page) return true;
 
   const choiceGroups = [...page.querySelectorAll('.choice-grid, .choice-list')];
-  if (choiceGroups.some(group => group.dataset.answered !== 'true')) return false;
+  if (choiceGroups.some(group => group.dataset.solved !== 'true')) return false;
 
-  const smartSelects = [...page.querySelectorAll('#smart-matching select')];
-  return smartSelects.every(select => Boolean(select.value));
+  const smartMatching = page.querySelector('#smart-matching');
+  return !smartMatching || smartMatching.dataset.solved === 'true';
 }
 
 function showTestRequiredHint(pageId) {
@@ -187,44 +188,77 @@ function loadProgress() {
   applyHomeLocks();
 }
 
+const CHOICE_FEEDBACK = {
+  'case-feedback-1': {
+    correct: '155 порций. Это остаток цели: 250 − 95 = 155.',
+    wrong: {
+      '125 порций': '125 получится, если разделить дневную цель пополам, но утром продали не половину, а 95 порций.',
+      '250 порций': '250 — цель на весь день. Утренний результат нужно вычесть.'
+    }
+  },
+  'case-feedback-2': {
+    correct: '202 000 ₽. Это остаток плана: 350 000 − 148 000 = 202 000.',
+    wrong: {
+      '175 000 ₽': '175 000 ₽ — половина дневного плана, но утром заработали не половину, а 148 000 ₽.',
+      '350 000 ₽': '350 000 ₽ — план на весь день. Утренний результат нужно вычесть.'
+    }
+  },
+  'case-feedback-3': {
+    correct: 'Завершить смену с 0 негативных отзывов. Этот ориентир действует весь день и относится ко всем зонам.',
+    wrong: {
+      'Удержать долю негативных отзывов не выше 1%': 'Цель задана абсолютным значением — 0 негативных отзывов. Заменять её процентом нельзя.',
+      'Снизить число негативных отзывов к прошлой неделе': 'Сравнение с прошлой неделей не отвечает цели текущей смены — завершить её без негативных отзывов.'
+    }
+  },
+  'calc-feedback': {
+    correct: '30 000 ₽. Это 20% от 150 000 ₽: 150 000 × 20 / 100 = 30 000.',
+    wrong: {
+      '24 000 ₽': '24 000 ₽ — это 16% от выручки, а по условию доля кассира составляет 20%.',
+      '36 000 ₽': '36 000 ₽ — это 24% от выручки, поэтому результат выше заданной доли.'
+    }
+  },
+  'control-feedback': {
+    correct: 'Уточнить понимание цели, выяснить причину отставания и вместе выбрать действие. Так помощь отвечает реальной причине.',
+    wrong: {
+      'Повторить план продаж, предложить чаще рекомендовать новинки и через час сверить результат': 'Действие выбрано до выяснения причины. Возможно, кассир уже предлагает новинки, а проблема в другом.',
+      'Передать часть плана опытному кассиру, снизить цель отстающему и через час сверить результат': 'Перераспределение без выяснения причины может скрыть проблему и сделать общую цель недостижимой.'
+    }
+  }
+};
+
 function answerChoice(button, isCorrect, feedbackId) {
   const feedback = document.getElementById(feedbackId);
   const group = button.closest('.choice-grid, .choice-list');
-  if (!feedback || !group || group.dataset.solved === 'true') return;
+  const copy = CHOICE_FEEDBACK[feedbackId];
+  if (!feedback || !group || !copy || group.dataset.solved === 'true') return;
   group.dataset.answered = 'true';
-
-  const caseFeedback = {
-    'case-feedback-1': {
-      correct: '<strong>Верно.</strong> 250 − 95 = 155 порций — это остаток цели для вечерней смены.',
-      incorrect: '<strong>Посчитай остаток.</strong> Из общей цели 250 вычти 95 порций, которые уже продали утром.'
-    },
-    'case-feedback-2': {
-      correct: '<strong>Верно.</strong> 350 000 − 148 000 = 202 000 рублей — столько нужно заработать вечером.',
-      incorrect: '<strong>Посчитай остаток.</strong> Из общей цели по товарообороту вычти утренний результат.'
-    },
-    'case-feedback-3': {
-      correct: '<strong>Верно.</strong> Нулевая цель по негативным отзывам сохраняется на протяжении всей смены.',
-      incorrect: '<strong>Вспомни общую цель.</strong> Если утром негативных отзывов не было, вечерняя смена должна сохранить этот результат.'
-    }
-  };
-  const copy = caseFeedback[feedbackId];
 
   if (isCorrect) {
     button.classList.add('correct');
     group.dataset.solved = 'true';
-    group.querySelectorAll('button').forEach(item => item.disabled = true);
+    group.querySelectorAll('button').forEach(item => { item.disabled = true; });
     feedback.className = 'feedback-box show correct';
-    feedback.innerHTML = copy?.correct || (feedbackId === 'calc-feedback'
-      ? '<strong>Верно.</strong> 150 000 × 20 / 100 = 30 000 рублей за смену.'
-      : '<strong>Верно.</strong> Сначала проверь понимание цели и найди причину отклонения. Только после этого выбирай действие, которое поможет кассиру вернуться к плану.');
-  } else {
-    button.classList.add('wrong');
-    feedback.className = 'feedback-box show incorrect';
-    feedback.innerHTML = copy?.incorrect || (feedbackId === 'calc-feedback'
-      ? '<strong>Пока нет.</strong> Найди 20% от 150 000: умножь сумму на 20 и раздели на 100.'
-      : '<strong>Попробуй ещё раз.</strong> Сначала выясни причину отставания. Повторение плана или перераспределение задач могут помочь, но выбирать действие стоит после разговора с сотрудником.');
-    setTimeout(() => button.classList.remove('wrong'), 650);
+    feedback.innerHTML = `<strong>Верно.</strong> ${copy.correct}`;
+    return;
   }
+
+  const wrongAttempts = Number(group.dataset.wrongAttempts || 0) + 1;
+  group.dataset.wrongAttempts = String(wrongAttempts);
+  const reason = copy.wrong[button.textContent.trim()];
+  button.classList.add('wrong');
+  feedback.className = 'feedback-box show incorrect';
+
+  if (wrongAttempts < 2) {
+    feedback.innerHTML = `<strong>Пока неверно.</strong> ${reason} Осталась одна попытка.`;
+    setTimeout(() => button.classList.remove('wrong'), 650);
+    return;
+  }
+
+  const correctButton = [...group.querySelectorAll('button')].find(item => item.getAttribute('onclick')?.includes(', true,'));
+  correctButton?.classList.add('correct');
+  group.dataset.solved = 'true';
+  group.querySelectorAll('button').forEach(item => { item.disabled = true; });
+  feedback.innerHTML = `<strong>Вторая попытка неверная.</strong> ${reason}<br><strong>Правильный ответ:</strong> ${copy.correct}`;
 }
 
 const SMART_DETAILS = [
@@ -280,6 +314,12 @@ function shuffleSmartMatching() {
 function resetSmartMatching() {
   const selects = [...document.querySelectorAll('#smart-matching select')];
   const feedback = document.getElementById('smart-feedback');
+  const container = document.getElementById('smart-matching');
+
+  if (container) {
+    delete container.dataset.attempts;
+    delete container.dataset.solved;
+  }
 
   selects.forEach(select => {
     select.value = '';
@@ -294,9 +334,10 @@ function resetSmartMatching() {
 }
 
 function checkSmartMatching() {
-
   const selects = [...document.querySelectorAll('#smart-matching select')];
   const feedback = document.getElementById('smart-feedback');
+  const container = document.getElementById('smart-matching');
+  if (!feedback || !container || container.dataset.solved === 'true') return;
   const unanswered = selects.filter(select => !select.value);
 
   selects.forEach(select => {
@@ -313,13 +354,41 @@ function checkSmartMatching() {
 
   const wrong = selects.filter(select => select.value !== select.dataset.answer);
   if (wrong.length) {
+    const attempts = Number(container.dataset.attempts || 0) + 1;
+    container.dataset.attempts = String(attempts);
     feedback.className = 'feedback-box show incorrect';
-    feedback.innerHTML = `<strong>Пока не всё совпало.</strong> Проверь выделенные соответствия: ${wrong.length}. Подумай, что именно показывает каждый пример — результат, число, достижимость, связь с общей целью или срок.`;
-    wrong[0].focus();
+    if (attempts < 2) {
+      feedback.innerHTML = `<strong>Пока не всё совпало.</strong> Неверных соответствий: ${wrong.length}. Подумай, где указан результат, число, достижимость, связь с общей целью и срок. Осталась одна попытка.`;
+      wrong[0].focus();
+      return;
+    }
+
+    const criterionMeaning = {
+      S: 'конкретный результат',
+      M: 'измеримое количество',
+      A: 'достижимость относительно обычного результата',
+      R: 'связь с общей целью ресторана',
+      T: 'срок выполнения'
+    };
+    const details = wrong.map(select => {
+      const example = select.closest('label')?.querySelector('span')?.textContent || '';
+      const selectedText = select.options[select.selectedIndex]?.textContent || select.value;
+      const correctText = select.querySelector(`option[value="${select.dataset.answer}"]`)?.textContent || select.dataset.answer;
+      return `<b>«${example}»:</b> выбран вариант «${selectedText}», но он описывает ${criterionMeaning[select.value]}. Здесь показан ${criterionMeaning[select.dataset.answer]}, поэтому верно «${correctText}».`;
+    }).join('<br>');
+    selects.forEach(select => {
+      select.value = select.dataset.answer;
+      select.classList.remove('wrong');
+      select.classList.add('correct');
+      select.disabled = true;
+    });
+    container.dataset.solved = 'true';
+    feedback.innerHTML = `<strong>Вторая попытка завершена. Правильные соответствия:</strong><br>${details}`;
     return;
   }
 
   selects.forEach(select => select.disabled = true);
+  container.dataset.solved = 'true';
   feedback.className = 'feedback-box show correct';
   feedback.innerHTML = '<strong>Верно: все пять частей цели на своих местах.</strong> Вместе они образуют понятную SMART-цель: что продаём, сколько, почему результат достижим, зачем он нужен ресторану и к какому сроку.';
 }
