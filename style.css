@@ -742,6 +742,12 @@ button:focus-visible, input:focus-visible, textarea:focus-visible { outline-colo
 }
 .course-back[hidden] { display: none; }
 
+.brave-report { margin: 1.5rem 0 2rem; overflow: hidden; border: 1px solid var(--ku-border); border-radius: var(--ku-radius-l); background: var(--ku-card); box-shadow: var(--ku-shadow-xs); }
+.brave-report a { display: block; overflow-x: auto; background: var(--ku-surface); }
+.brave-report img { display: block; width: 100%; min-width: 46rem; height: auto; }
+.brave-report figcaption { padding: 1rem 1.25rem; color: var(--ku-text-soft); line-height: 1.55; }
+.brave-report figcaption strong { color: var(--ku-text); }
+
 .goal-funnel { margin: 2.5rem 0; }
 .goal-funnel > h2 { margin: 0 0 1.5rem; text-align: center; font-size: clamp(1.7rem, 3vw, 2.5rem); }
 .funnel-stage { position: relative; display: flex; gap: 1rem; margin: 0 auto; padding: 1.35rem clamp(2rem, 5vw, 4rem); border: 1px solid var(--ku-border); background: var(--ku-card); box-shadow: var(--ku-shadow-xs); clip-path: polygon(5% 0, 95% 0, 100% 100%, 0 100%); }
