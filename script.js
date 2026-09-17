@@ -22,9 +22,16 @@ function navigateTo(pageId) {
   if (!target) return;
   const requestedChapter = CHAPTER_ORDER.indexOf(pageId);
   const currentChapter = CHAPTER_ORDER.indexOf(currentPage);
-  if (requestedChapter > currentChapter && currentChapter >= 0 && !hasAnsweredChapterTests(currentPage)) {
-    showTestRequiredHint(currentPage);
-    return;
+  if (requestedChapter > currentChapter && currentChapter >= 0) {
+    const unviewed = findFirstUnviewedContent(currentPage);
+    if (unviewed) {
+      showRequiredContentHint(currentPage, unviewed);
+      return;
+    }
+    if (!hasAnsweredChapterTests(currentPage)) {
+      showTestRequiredHint(currentPage);
+      return;
+    }
   }
   if (requestedChapter >= unlockedChapters) return;
 
@@ -71,9 +78,28 @@ function resetCourseInteractions() {
   document.querySelectorAll('.understanding-checklist input').forEach(input => { input.checked = false; });
   document.querySelectorAll('.reason-card').forEach(card => {
     card.classList.remove('open');
+    delete card.dataset.viewed;
     card.querySelector('button')?.setAttribute('aria-expanded', 'false');
   });
-  document.querySelectorAll('.question-guidance').forEach(details => { details.open = false; });
+  document.querySelectorAll('.question-guidance').forEach(details => {
+    details.open = false;
+    delete details.dataset.viewed;
+  });
+  document.querySelectorAll('.smart-card').forEach((card, index) => {
+    card.classList.toggle('active', index === 0);
+    if (index === 0) card.dataset.viewed = 'true';
+    else delete card.dataset.viewed;
+  });
+  const smartBreakdown = document.getElementById('smart-breakdown');
+  if (smartBreakdown) {
+    smartBreakdown.classList.remove('smart-breakdown-open', 'visible');
+    delete smartBreakdown.dataset.viewed;
+  }
+  const smartRevealButton = document.querySelector('.smart-reveal-btn');
+  if (smartRevealButton) {
+    smartRevealButton.classList.remove('active');
+    smartRevealButton.innerHTML = 'Разобрать эту цель по SMART <span>＋</span>';
+  }
   document.getElementById('completion-panel')?.classList.remove('show');
   resetSmartMatching();
 }
@@ -99,6 +125,11 @@ function startCourse() {
 function completeChapter(completedPageId, nextPageId) {
   const completedIndex = CHAPTER_ORDER.indexOf(completedPageId);
   if (completedIndex < 0 || currentPage !== completedPageId || completedIndex >= unlockedChapters) return;
+  const unviewed = findFirstUnviewedContent(completedPageId);
+  if (unviewed) {
+    showRequiredContentHint(completedPageId, unviewed);
+    return;
+  }
   if (!hasAnsweredChapterTests(completedPageId)) {
     showTestRequiredHint(completedPageId);
     return;
@@ -261,6 +292,38 @@ function answerChoice(button, isCorrect, feedbackId) {
   feedback.innerHTML = `<strong>Вторая попытка неверная.</strong> ${reason}<br><strong>Правильный ответ:</strong> ${copy.correct}`;
 }
 
+function findFirstUnviewedContent(pageId) {
+  const page = document.getElementById(`page-${pageId}`);
+  if (!page) return null;
+  return page.querySelector([
+    '.question-guidance:not([data-viewed="true"])',
+    '.smart-card:not([data-viewed="true"])',
+    '#smart-breakdown:not([data-viewed="true"])',
+    '.reason-card:not([data-viewed="true"])'
+  ].join(', '));
+}
+
+function showRequiredContentHint(pageId, element) {
+  const page = document.getElementById(`page-${pageId}`);
+  const nextRow = page?.querySelector('.next-row');
+  if (nextRow) {
+    let hint = nextRow.querySelector('.course-gate-hint');
+    if (!hint) {
+      hint = document.createElement('p');
+      hint.className = 'course-gate-hint';
+      hint.setAttribute('role', 'status');
+      nextRow.prepend(hint);
+    }
+    hint.textContent = 'Сначала открой все пояснения выше.';
+    hint.classList.add('show');
+  }
+
+  const target = element.id === 'smart-breakdown' ? document.querySelector('.smart-reveal-btn') : element;
+  target?.classList.add('required-attention');
+  target?.scrollIntoView({ behavior: 'smooth', block: 'center' });
+  setTimeout(() => target?.classList.remove('required-attention'), 1800);
+}
+
 const SMART_DETAILS = [
   ['S · Specific', 'Назови конкретный результат. Например: продать пирожки с вишней, предлагая их к горячим напиткам.'],
   ['M · Measurable', 'Укажи число, с которым сравнишь результат. Например: 15 пирожков.'],
@@ -272,6 +335,8 @@ const SMART_DETAILS = [
 function selectSmart(button, index) {
   document.querySelectorAll('.smart-card').forEach(card => card.classList.remove('active'));
   button.classList.add('active');
+  button.dataset.viewed = 'true';
+  button.classList.remove('required-attention');
   const [title, text] = SMART_DETAILS[index];
   document.getElementById('smart-detail').innerHTML = `<span>${title}</span><p>${text}</p>`;
 }
@@ -283,6 +348,10 @@ function toggleSmartBreakdown() {
   const isOpen = panel.classList.toggle('smart-breakdown-open');
   panel.classList.toggle('visible', isOpen);
   button.classList.toggle('active', isOpen);
+  if (isOpen) {
+    panel.dataset.viewed = 'true';
+    button.classList.remove('required-attention');
+  }
   button.innerHTML = isOpen ? 'Скрыть разбор SMART <span>−</span>' : 'Разобрать эту цель по SMART <span>＋</span>';
   if (isOpen) panel.scrollIntoView({ behavior: 'smooth', block: 'nearest' });
 }
@@ -396,7 +465,23 @@ function checkSmartMatching() {
 function toggleReason(button) {
   const card = button.closest('.reason-card');
   const isOpen = card.classList.toggle('open');
+  if (isOpen) {
+    card.dataset.viewed = 'true';
+    card.classList.remove('required-attention');
+  }
   button.setAttribute('aria-expanded', String(isOpen));
+}
+
+function initRequiredContentTracking() {
+  document.querySelectorAll('.question-guidance').forEach(details => {
+    details.addEventListener('toggle', () => {
+      if (!details.open) return;
+      details.dataset.viewed = 'true';
+      details.classList.remove('required-attention');
+    });
+  });
+  const firstSmartCard = document.querySelector('.smart-card');
+  if (firstSmartCard) firstSmartCard.dataset.viewed = 'true';
 }
 
 function answerReflection(answer) {
@@ -475,5 +560,6 @@ document.addEventListener('DOMContentLoaded', () => {
   shuffleSmartMatching();
   loadProgress();
   initMadinaAudio();
+  initRequiredContentTracking();
   navigateTo('home');
 });
