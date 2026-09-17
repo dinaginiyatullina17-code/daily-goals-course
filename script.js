@@ -314,7 +314,7 @@ function showRequiredContentHint(pageId, element) {
       hint.setAttribute('role', 'status');
       nextRow.prepend(hint);
     }
-    hint.textContent = 'Сначала открой все пояснения выше.';
+    hint.textContent = 'Сначала изучи все пояснения выше.';
     hint.classList.add('show');
   }
 
