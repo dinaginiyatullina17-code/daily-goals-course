@@ -31,8 +31,14 @@ function navigateTo(pageId) {
   PAGES.forEach(id => document.getElementById(`page-${id}`)?.classList.remove('active'));
   target.classList.add('active');
   currentPage = pageId;
-  if (pageId === 'smart') resetSmartMatching();
   window.scrollTo({ top: 0, behavior: 'instant' });
+
+  const backButton = document.getElementById('course-back');
+  if (backButton) {
+    backButton.hidden = pageId === 'home';
+    const previousPage = PAGES[PAGES.indexOf(pageId) - 1];
+    backButton.setAttribute('aria-label', `Назад: ${CHAPTER_NAMES[previousPage] || 'главная страница курса'}`);
+  }
 
   const chapterIndex = requestedChapter;
   document.getElementById('nav-chapter').textContent = CHAPTER_NAMES[pageId] || '';
@@ -41,6 +47,11 @@ function navigateTo(pageId) {
 
   applyHomeLocks();
   setTimeout(initFadeIn, 30);
+}
+
+function goToPreviousPage() {
+  const currentIndex = PAGES.indexOf(currentPage);
+  if (currentIndex > 0) navigateTo(PAGES[currentIndex - 1]);
 }
 
 function resetCourseInteractions() {

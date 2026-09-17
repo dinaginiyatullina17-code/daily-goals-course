@@ -721,10 +721,23 @@ button:focus-visible, input:focus-visible, textarea:focus-visible { outline-colo
 }
 
 @media print {
-  #top-nav, .chapter-hero, .btn-primary, .btn-secondary, .btn-ghost, .next-row { display: none !important; }
+  #top-nav, .chapter-hero, .btn-primary, .btn-secondary, .btn-ghost, .next-row, .course-back { display: none !important; }
   .page { display: none !important; padding: 0; }
   #page-understanding { display: block !important; }
   .lesson-body > * { display: none !important; }
   .lesson-body > .section-title:first-child, .lesson-body > .body-copy, .lesson-body > .understanding-checklist { display: block !important; opacity: 1; transform: none; }
   .understanding-checklist input:checked + span { text-decoration: none; background: white; border-color: #888; }
 }
+
+.course-back {
+  position: fixed;
+  bottom: max(1rem, env(safe-area-inset-bottom));
+  left: max(1rem, env(safe-area-inset-left));
+  z-index: 90;
+  display: inline-flex;
+  align-items: center;
+  gap: .6rem;
+  min-height: 3rem;
+  box-shadow: var(--ku-shadow-m);
+}
+.course-back[hidden] { display: none; }
