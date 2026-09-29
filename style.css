@@ -156,6 +156,9 @@ h1, h2, h3, .eyebrow, .chapter-num, .btn-primary { font-family: var(--font-head)
 .quiz-card > p { font-size: 17px; line-height: 1.6; }
 .case-quiz { box-shadow: 8px 8px 0 var(--c-brand); }
 .case-quiz > h2 { margin-bottom: 10px; }
+.shift-share-note { margin: 1.25rem 0 0; padding: 1rem 1.1rem; border-left: .25rem solid var(--ku-brand); border-radius: 0 var(--ku-radius-m) var(--ku-radius-m) 0; background: var(--ku-brand-soft); }
+.shift-share-note strong { display: block; margin-bottom: .35rem; }
+.shift-share-note p { margin: 0; line-height: 1.55; }
 .case-question { margin-top: 34px; padding-top: 28px; border-top: 1px solid var(--c-muted); }
 .case-question h3 { margin-bottom: 14px; font-family: var(--font-body); font-size: 19px; line-height: 1.45; }
 .case-question .choice-grid { margin-top: 0; }
