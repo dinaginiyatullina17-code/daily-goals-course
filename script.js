@@ -85,11 +85,12 @@ function resetCourseInteractions() {
     details.open = false;
     delete details.dataset.viewed;
   });
-  document.querySelectorAll('.smart-card').forEach((card, index) => {
-    card.classList.toggle('active', index === 0);
-    if (index === 0) card.dataset.viewed = 'true';
-    else delete card.dataset.viewed;
+  document.querySelectorAll('.smart-card').forEach(card => {
+    card.classList.remove('active');
+    delete card.dataset.viewed;
   });
+  const smartDetail = document.getElementById('smart-detail');
+  if (smartDetail) smartDetail.innerHTML = '<span>Выбери букву SMART</span><p>Нажми на любую карточку выше — здесь появится объяснение и пример.</p>';
   const smartBreakdown = document.getElementById('smart-breakdown');
   if (smartBreakdown) {
     smartBreakdown.classList.remove('smart-breakdown-open', 'visible');
@@ -239,6 +240,13 @@ const CHOICE_FEEDBACK = {
     wrong: {
       'Удержать долю негативных отзывов не выше 1%': 'Цель задана абсолютным значением — 0 негативных отзывов. Заменять её процентом нельзя.',
       'Снизить число негативных отзывов к прошлой неделе': 'Сравнение с прошлой неделей не отвечает цели текущей смены — завершить её без негативных отзывов.'
+    }
+  },
+  'case-feedback-4': {
+    correct: '292 900 ₽. План утра: 505 000 × 40% = 202 000 ₽. Факт утра: 202 000 × 105% = 212 100 ₽. Остаток на вечер: 505 000 − 212 100 = 292 900 ₽.',
+    wrong: {
+      '212 100 ₽': '212 100 ₽ — это фактическая выручка утра: 202 000 × 105%. Для вечерней цели этот результат нужно вычесть из общего плана.',
+      '303 000 ₽': '303 000 ₽ — обычные 60% вечерней смены. Но утро перевыполнило свой план, поэтому вечерний остаток стал меньше.'
     }
   },
   'calc-feedback': {
@@ -480,8 +488,6 @@ function initRequiredContentTracking() {
       details.classList.remove('required-attention');
     });
   });
-  const firstSmartCard = document.querySelector('.smart-card');
-  if (firstSmartCard) firstSmartCard.dataset.viewed = 'true';
 }
 
 function answerReflection(answer) {
