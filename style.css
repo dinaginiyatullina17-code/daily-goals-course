@@ -781,7 +781,6 @@ button:focus-visible, input:focus-visible, textarea:focus-visible { outline-colo
 .funnel-stage ul { margin: 0; padding-left: 1.2rem; line-height: 1.65; }
 .funnel-stage-content { min-width: 0; width: 100%; }
 .funnel-grid { display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: .75rem; }
-.funnel-zones .funnel-grid { grid-template-columns: repeat(2, minmax(0, 1fr)); }
 .funnel-grid article { padding: .9rem; border-radius: var(--ku-radius-m); background: var(--ku-bg); }
 .funnel-grid b { display: block; margin-bottom: .4rem; color: var(--ku-brand-strong); }
 .funnel-grid p { color: var(--ku-text-soft); font-size: .9rem; }
@@ -797,5 +796,4 @@ button:focus-visible, input:focus-visible, textarea:focus-visible { outline-colo
   .funnel-tasks { width: 100%; }
   .funnel-stage { padding: 1rem 1.25rem; clip-path: polygon(3% 0, 97% 0, 100% 100%, 0 100%); }
   .funnel-grid { grid-template-columns: 1fr; }
-  .funnel-zones .funnel-grid { grid-template-columns: 1fr; }
 }
