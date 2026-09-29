@@ -232,7 +232,7 @@ h1, h2, h3, .eyebrow, .chapter-num, .btn-primary { font-family: var(--font-head)
 .smart-breakdown-hidden.smart-breakdown-open { display: block; }
 .smart-breakdown { margin: 2rem 0 3rem; padding: 1.5rem; border: 1px solid var(--ku-border); border-radius: var(--ku-radius-l); background: var(--ku-surface); }
 
-.shift-goal-summary { display: grid; grid-template-columns: 1fr 1fr; gap: 1rem; margin: 1.25rem 0 3rem; }
+.shift-goal-summary { display: grid; grid-template-columns: 1fr; gap: 1rem; margin: 1.25rem 0 3rem; }
 .shift-goal-summary .shift-share-note { margin: 0; }
 .shift-goal-takeaway { padding: 1.25rem 1.35rem; border: 1px solid var(--ku-border); border-radius: var(--ku-radius-l); background: var(--ku-brand-soft); }
 .shift-goal-takeaway strong { display: block; margin-bottom: .45rem; color: var(--ku-brand-strong); }
@@ -781,6 +781,7 @@ button:focus-visible, input:focus-visible, textarea:focus-visible { outline-colo
 .funnel-stage ul { margin: 0; padding-left: 1.2rem; line-height: 1.65; }
 .funnel-stage-content { min-width: 0; width: 100%; }
 .funnel-grid { display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: .75rem; }
+.funnel-zones .funnel-grid { grid-template-columns: repeat(2, minmax(0, 1fr)); }
 .funnel-grid article { padding: .9rem; border-radius: var(--ku-radius-m); background: var(--ku-bg); }
 .funnel-grid b { display: block; margin-bottom: .4rem; color: var(--ku-brand-strong); }
 .funnel-grid p { color: var(--ku-text-soft); font-size: .9rem; }
@@ -796,4 +797,5 @@ button:focus-visible, input:focus-visible, textarea:focus-visible { outline-colo
   .funnel-tasks { width: 100%; }
   .funnel-stage { padding: 1rem 1.25rem; clip-path: polygon(3% 0, 97% 0, 100% 100%, 0 100%); }
   .funnel-grid { grid-template-columns: 1fr; }
+  .funnel-zones .funnel-grid { grid-template-columns: 1fr; }
 }
