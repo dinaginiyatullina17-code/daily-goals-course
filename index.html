@@ -7,7 +7,7 @@
   <meta name="description" content="Интерактивный курс о постановке целей и управлении их достижением в течение дня.">
   <title>Как управлять достижением целей на день</title>
   <link rel="stylesheet" href="css/kuds.css?v=5">
-  <link rel="stylesheet" href="style.css?v=39">
+  <link rel="stylesheet" href="style.css?v=40">
 </head>
 <body>
   <nav id="top-nav" aria-label="Навигация по курсу">
@@ -94,7 +94,7 @@
         </div>
 
         <div class="intro-summary fade-in">
-          <p>На старте смены у ресторана есть общий план: выручка, продажи новинок и качество сервиса. Ты переводишь этот план в конкретные задачи сотрудников, отслеживаешь результат и вовремя помогаешь скорректировать действия.</p>
+          <p>На старте смены у ресторана есть общий план: выручка, продажи новинок и гостевой опыт. Ты переводишь этот план в конкретные задачи сотрудников, отслеживаешь результат и вовремя помогаешь скорректировать действия.</p>
         </div>
         <section class="goal-funnel fade-in" aria-labelledby="goal-funnel-title">
           <h2 id="goal-funnel-title">Как общая цель становится задачами команды</h2>
@@ -107,7 +107,7 @@
 
           <div class="funnel-stage funnel-metrics">
             <span class="funnel-number">2</span>
-            <div><h3>Показатели движения к цели</h3><ul><li>почасовая выручка и количество проданных новинок;</li><li>скорость и качество приготовления;</li><li>качество сервиса и отзывы Гостей.</li></ul></div>
+            <div><h3>Показатели движения к цели</h3><ul><li>почасовая выручка и количество проданных новинок;</li><li>скорость и качество приготовления;</li><li>гостевой опыт.</li></ul></div>
           </div>
           <span class="funnel-arrow" aria-hidden="true">↓</span>
 
@@ -159,7 +159,6 @@
           <div class="quiz-top"><span>Пример из практики · проверь себя</span><b>01</b></div>
           <h2>Ты управляешь вечерней сменой</h2>
           <p>Ответь на три вопроса по ситуации. После каждого ответа увидишь логику расчёта.</p>
-          <aside class="shift-share-note"><strong>Учитывай долю каждой смены.</strong><p>Распределение выручки по сменам в каждом ресторане своё. Уточни у наставника, какой процент приходится на утро, а какой — на вечер, чтобы в дальнейшем опираться на эти цифры при постановке цели.</p></aside>
           <div class="case-question">
             <h3>Утром поставили цель продать 250 новинок, но продали 95. Сколько нужно продать вечером?</h3>
             <div class="choice-grid"><button type="button" onclick="answerChoice(this, false, 'case-feedback-1')">125 порций</button><button type="button" onclick="answerChoice(this, true, 'case-feedback-1')">155 порций</button><button type="button" onclick="answerChoice(this, false, 'case-feedback-1')">250 порций</button></div>
@@ -175,6 +174,11 @@
             <div class="choice-grid"><button type="button" onclick="answerChoice(this, true, 'case-feedback-3')">Завершить смену с 0 негативных отзывов</button><button type="button" onclick="answerChoice(this, false, 'case-feedback-3')">Удержать долю негативных отзывов не выше 1%</button><button type="button" onclick="answerChoice(this, false, 'case-feedback-3')">Снизить число негативных отзывов к прошлой неделе</button></div>
             <div class="feedback-box" id="case-feedback-3" aria-live="polite"></div>
           </div>
+        </div>
+
+        <div class="shift-goal-summary fade-in">
+          <aside class="shift-share-note"><strong>Учитывай долю каждой смены.</strong><p>Распределение выручки по сменам в каждом ресторане своё. Уточни у наставника, какой процент приходится на утро, а какой — на вечер, чтобы в дальнейшем опираться на эти цифры при постановке цели.</p></aside>
+          <div class="shift-goal-takeaway"><strong>Как поставить общую цель на смену</strong><p>Возьми план ресторана на день, учти долю своей смены и фактический результат предыдущей смены. Определи результат по выручке, продажам новинок и гостевому опыту.</p></div>
         </div>
 
         <div class="section-title fade-in"><h2>Как из общей цели поставить задачу каждому сотруднику смены</h2></div>
@@ -234,16 +238,8 @@
         <div class="smart-detail fade-in" id="smart-detail" aria-live="polite">
           <span>Выбери букву SMART</span><p>Нажми на любую карточку выше — здесь появится объяснение и пример.</p>
         </div>
-        <div class="quote-card fade-in">
-          <p class="eyebrow">Собираем пять частей в одну цель</p>
-          <p class="quote-label">Пример SMART-цели для кассира</p>
-          <blockquote>«С 9:00 до 11:00 продай 15 пирожков с вишней — на 5 больше твоего обычного результата. Предлагай их к горячим напиткам: это поможет увеличить средний чек ресторана».</blockquote>
-        </div>
-
-        <button class="smart-reveal-btn fade-in" type="button" onclick="toggleSmartBreakdown()">Разобрать эту цель по SMART <span>＋</span></button>
-
-        <div class="smart-breakdown smart-breakdown-hidden fade-in" id="smart-breakdown">
-          <p class="eyebrow">Разбор примера по SMART:</p>
+        <div class="smart-breakdown fade-in" id="smart-breakdown">
+          <p class="eyebrow">Собери воедино SMART-цель для кассира</p>
           <p class="smart-annotated-goal">«<span class="smart-mark" data-smart="T">С 9:00 до 11:00</span> продай <span class="smart-mark" data-smart="M">15</span> <span class="smart-mark" data-smart="S">пирожков с вишней</span> — <span class="smart-mark" data-smart="A">на 5 больше твоего обычного результата</span>. Предлагай их к горячим напиткам: это поможет <span class="smart-mark" data-smart="R">увеличить средний чек ресторана</span>».</p>
           <div class="smart-annotated-legend"><span><b>S</b>что продаём</span><span><b>M</b>сколько</span><span><b>A</b>почему достижимо</span><span><b>R</b>зачем ресторану</span><span><b>T</b>к какому времени</span></div>
         </div>
@@ -256,7 +252,7 @@
             <label><span>С 17:00 до 21:00</span><select data-answer="T" aria-label="Критерий для срока цели кухни"><option value="">Выбери критерий</option><option value="R">R · Релевантность</option><option value="M">M · Измеримость</option><option value="T">T · Ограниченность во времени</option><option value="A">A · Достижимость</option><option value="S">S · Конкретность</option></select></label>
             <label><span>Не менее 6 порций</span><select data-answer="M" aria-label="Критерий для количества порций"><option value="">Выбери критерий</option><option value="A">A · Достижимость</option><option value="M">M · Измеримость</option><option value="T">T · Ограниченность во времени</option><option value="R">R · Релевантность</option><option value="S">S · Конкретность</option></select></label>
             <label><span>Выдавать заказы без задержек</span><select data-answer="R" aria-label="Критерий для связи с целью ресторана"><option value="">Выбери критерий</option><option value="M">M · Измеримость</option><option value="S">S · Конкретность</option><option value="A">A · Достижимость</option><option value="R">R · Релевантность</option><option value="T">T · Ограниченность во времени</option></select></label>
-            <label><span>Поддерживать запас новинки на станции</span><select data-answer="S" aria-label="Критерий для конкретного результата кухни"><option value="">Выбери критерий</option><option value="S">S · Конкретность</option><option value="T">T · Ограниченность во времени</option><option value="R">R · Релевантность</option><option value="M">M · Измеримость</option><option value="A">A · Достижимость</option></select></label>
+            <label><span>Поддерживать запас котлет Ангус</span><select data-answer="S" aria-label="Критерий для конкретного результата кухни"><option value="">Выбери критерий</option><option value="S">S · Конкретность</option><option value="T">T · Ограниченность во времени</option><option value="R">R · Релевантность</option><option value="M">M · Измеримость</option><option value="A">A · Достижимость</option></select></label>
             <label><span>На 2 порции больше обычного запаса</span><select data-answer="A" aria-label="Критерий для достижимости цели кухни"><option value="">Выбери критерий</option><option value="R">R · Релевантность</option><option value="T">T · Ограниченность во времени</option><option value="A">A · Достижимость</option><option value="S">S · Конкретность</option><option value="M">M · Измеримость</option></select></label>
           </div>
           <button class="btn-check" type="button" onclick="checkSmartMatching()">Проверить соответствия</button>
@@ -329,7 +325,7 @@
           <figcaption><strong>Пример отчёта Brave&amp;Bold.</strong> Данные разбиты на получасовые интервалы. Для ежечасной сверки смотри два соседних столбца вместе.</figcaption>
         </figure>
         <div class="examples-card fade-in">
-          <h3>Как это выглядит в работе: пример ежечасной сверки</h3>
+          <h3>Как это выглядит в работе</h3>
           <p>Если цель кассира на 8-часовую смену — 80 000 ₽, то при равномерной загрузке ориентир составляет 10 000 ₽ за час. Через два часа сравни накопленные продажи с 20 000 ₽. Если поток Гостей меняется, распределяй почасовой план с учётом ожидаемой загрузки.</p>
         </div>
 
@@ -443,6 +439,6 @@
   </main>
   <button class="course-back btn-secondary" id="course-back" type="button" onclick="goToPreviousPage()" hidden><span aria-hidden="true">←</span> Назад</button>
 
-  <script src="script.js?v=30"></script>
+  <script src="script.js?v=31"></script>
 </body>
 </html>

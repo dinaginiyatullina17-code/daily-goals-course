@@ -91,16 +91,6 @@ function resetCourseInteractions() {
   });
   const smartDetail = document.getElementById('smart-detail');
   if (smartDetail) smartDetail.innerHTML = '<span>Выбери букву SMART</span><p>Нажми на любую карточку выше — здесь появится объяснение и пример.</p>';
-  const smartBreakdown = document.getElementById('smart-breakdown');
-  if (smartBreakdown) {
-    smartBreakdown.classList.remove('smart-breakdown-open', 'visible');
-    delete smartBreakdown.dataset.viewed;
-  }
-  const smartRevealButton = document.querySelector('.smart-reveal-btn');
-  if (smartRevealButton) {
-    smartRevealButton.classList.remove('active');
-    smartRevealButton.innerHTML = 'Разобрать эту цель по SMART <span>＋</span>';
-  }
   document.getElementById('completion-panel')?.classList.remove('show');
   resetSmartMatching();
 }
@@ -299,7 +289,6 @@ function findFirstUnviewedContent(pageId) {
   return page.querySelector([
     '.question-guidance:not([data-viewed="true"])',
     '.smart-card:not([data-viewed="true"])',
-    '#smart-breakdown:not([data-viewed="true"])',
     '.reason-card:not([data-viewed="true"])'
   ].join(', '));
 }
@@ -319,7 +308,7 @@ function showRequiredContentHint(pageId, element) {
     hint.classList.add('show');
   }
 
-  const target = element.id === 'smart-breakdown' ? document.querySelector('.smart-reveal-btn') : element;
+  const target = element;
   target?.classList.add('required-attention');
   target?.scrollIntoView({ behavior: 'smooth', block: 'center' });
   setTimeout(() => target?.classList.remove('required-attention'), 1800);
@@ -340,21 +329,6 @@ function selectSmart(button, index) {
   button.classList.remove('required-attention');
   const [title, text] = SMART_DETAILS[index];
   document.getElementById('smart-detail').innerHTML = `<span>${title}</span><p>${text}</p>`;
-}
-
-function toggleSmartBreakdown() {
-  const panel = document.getElementById('smart-breakdown');
-  const button = document.querySelector('.smart-reveal-btn');
-  if (!panel || !button) return;
-  const isOpen = panel.classList.toggle('smart-breakdown-open');
-  panel.classList.toggle('visible', isOpen);
-  button.classList.toggle('active', isOpen);
-  if (isOpen) {
-    panel.dataset.viewed = 'true';
-    button.classList.remove('required-attention');
-  }
-  button.innerHTML = isOpen ? 'Скрыть разбор SMART <span>−</span>' : 'Разобрать эту цель по SMART <span>＋</span>';
-  if (isOpen) panel.scrollIntoView({ behavior: 'smooth', block: 'nearest' });
 }
 
 function shuffleInPlace(items) {

@@ -230,7 +230,17 @@ h1, h2, h3, .eyebrow, .chapter-num, .btn-primary { font-family: var(--font-head)
 .smart-reveal-btn span { font-size: 20px; line-height: .8; }
 .smart-breakdown-hidden { display: none; }
 .smart-breakdown-hidden.smart-breakdown-open { display: block; }
-.smart-breakdown { margin-top: 40px; padding: 1.5rem; border: 1px solid var(--ku-border); border-radius: var(--ku-radius-l); background: var(--ku-surface); }
+.smart-breakdown { margin: 2rem 0 3rem; padding: 1.5rem; border: 1px solid var(--ku-border); border-radius: var(--ku-radius-l); background: var(--ku-surface); }
+
+.shift-goal-summary { display: grid; grid-template-columns: 1fr 1fr; gap: 1rem; margin: 1.25rem 0 3rem; }
+.shift-goal-summary .shift-share-note { margin: 0; }
+.shift-goal-takeaway { padding: 1.25rem 1.35rem; border: 1px solid var(--ku-border); border-radius: var(--ku-radius-l); background: var(--ku-brand-soft); }
+.shift-goal-takeaway strong { display: block; margin-bottom: .45rem; color: var(--ku-brand-strong); }
+.shift-goal-takeaway p { margin: 0; }
+
+@media (max-width: 720px) {
+  .shift-goal-summary { grid-template-columns: 1fr; }
+}
 .smart-annotated-goal { display: flex; flex-wrap: wrap; align-items: flex-end; gap: 1.3rem .45rem; margin: 2rem 0 1.5rem; font-size: clamp(1.05rem, 2vw, 1.35rem); font-weight: 650; line-height: 2.4; }
 .smart-mark { position: relative; display: inline-block; padding: .05rem .35rem; border: 2px solid var(--ku-brand); border-radius: .55rem; background: var(--ku-card); line-height: 1.5; }
 .smart-mark::before { content: attr(data-smart); position: absolute; top: -1.4rem; left: 50%; display: grid; place-items: center; width: 1.65rem; height: 1.65rem; border: 2px solid var(--ku-brand); border-radius: 50%; background: var(--ku-brand); color: var(--ku-brand-on); font-size: .78rem; font-weight: 800; line-height: 1; transform: translateX(-50%); }
