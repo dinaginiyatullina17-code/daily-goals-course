@@ -138,7 +138,7 @@ def xml_escape(text: str) -> str:
 
 def inject_script(html_bytes: bytes) -> bytes:
     """Insert <script src="scorm_api.js"></script> before </head> (or at start)."""
-    tag = b'<script src="scorm_api.js"></script>'
+    tag = b'<script src="scorm_api.js?v=2"></script>'
     lower = html_bytes.lower()
 
     pos = lower.find(b"</head>")
