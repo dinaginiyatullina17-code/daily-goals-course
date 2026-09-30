@@ -504,9 +504,8 @@ function completeCourse() {
   unlockedChapters = CHAPTER_ORDER.length;
   saveProgress({ localOnly: true });
   try { localStorage.setItem(`${PROGRESS_KEY}_completed`, 'passed'); } catch (error) {}
-  let lmsFinished = false;
   try {
-    if (window.SCORM && typeof SCORM.complete === 'function') lmsFinished = SCORM.complete() === true;
+    if (window.SCORM && typeof SCORM.complete === 'function') SCORM.complete();
   } catch (error) {}
   const button = document.querySelector('#page-summary .completion-card .btn-primary');
   if (button) {
@@ -515,10 +514,6 @@ function completeCourse() {
     button.setAttribute('aria-disabled', 'true');
   }
   applyHomeLocks();
-  if (lmsFinished) {
-    try { window.top.close(); } catch (error) {}
-    try { window.close(); } catch (error) {}
-  }
 }
 
 document.addEventListener('DOMContentLoaded', () => {
