@@ -522,6 +522,12 @@ function completeCourse() {
       SCORM.complete();
     }
   } catch (error) {}
+  const button = document.querySelector('#page-summary .completion-card .btn-primary');
+  if (button) {
+    button.textContent = 'Курс завершён';
+    button.disabled = true;
+    button.setAttribute('aria-disabled', 'true');
+  }
   applyHomeLocks();
 }
 
