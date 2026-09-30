@@ -192,10 +192,10 @@ function applyHomeLocks() {
   });
 }
 
-function saveProgress() {
+function saveProgress(options = {}) {
   const state = JSON.stringify({ version: PROGRESS_VERSION, unlocked: unlockedChapters, page: currentPage });
   try { localStorage.setItem(PROGRESS_KEY, state); } catch (error) {}
-  if (window.SCORM && typeof SCORM.set === 'function') {
+  if (!options.localOnly && window.SCORM && typeof SCORM.set === 'function') {
     try {
       SCORM.set('cmi.suspend_data', state);
       const status = SCORM.get?.('cmi.core.lesson_status');
@@ -502,7 +502,7 @@ function printChecklist() {
 
 function completeCourse() {
   unlockedChapters = CHAPTER_ORDER.length;
-  saveProgress();
+  saveProgress({ localOnly: true });
   try { localStorage.setItem(`${PROGRESS_KEY}_completed`, 'passed'); } catch (error) {}
   if (window.SCORM && typeof SCORM.complete === 'function') {
     try { SCORM.complete(); } catch (error) {}
