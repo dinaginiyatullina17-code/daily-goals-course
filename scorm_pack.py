@@ -20,7 +20,6 @@ SCORM_API_JS = """\
 (function () {
   var _api = null;
   var _ready = false;
-  var _terminated = false;
 
   function _findAPI(win) {
     var depth = 0;
@@ -39,8 +38,6 @@ SCORM_API_JS = """\
 
   var SCORM = {
     init: function () {
-      if (_terminated) return false;
-      if (_ready) return true;
       _api = _getAPI();
       if (!_api) { console.warn("[SCORM] LMS API not found — running outside LMS"); return false; }
       var r = _api.LMSInitialize("");
@@ -50,26 +47,25 @@ SCORM_API_JS = """\
     },
 
     set: function (key, value) {
-      if (!_ready && !this.init()) return false;
-      return _api.LMSSetValue(key, String(value));
+      if (!_ready) return;
+      _api.LMSSetValue(key, String(value));
     },
 
     get: function (key) {
-      if (!_ready && !this.init()) return "";
+      if (!_ready) return "";
       return _api.LMSGetValue(key);
     },
 
     commit: function () {
-      if (!_ready && !this.init()) return false;
-      return _api.LMSCommit("");
+      if (!_ready) return;
+      _api.LMSCommit("");
     },
 
     finish: function () {
-      if (!_ready && !this.init()) return false;
-      var result = _api.LMSFinish("");
+      if (!_ready) return;
+      _api.LMSCommit("");
+      _api.LMSFinish("");
       _ready = false;
-      _terminated = true;
-      return result;
     },
 
     /* One-call shortcut — use on your "Завершить" button */
@@ -78,9 +74,7 @@ SCORM_API_JS = """\
       this.set("cmi.core.score.raw",     "100");
       this.set("cmi.core.score.min",     "0");
       this.set("cmi.core.score.max",     "100");
-      this.commit();
-      this.set("cmi.core.exit", "logout");
-      this.commit();
+      this.set("cmi.core.exit",          "logout");
       this.finish();
     }
   };
