@@ -38,6 +38,7 @@ SCORM_API_JS = """\
 
   var SCORM = {
     init: function () {
+      if (_ready) return true;
       _api = _getAPI();
       if (!_api) { console.warn("[SCORM] LMS API not found — running outside LMS"); return false; }
       var r = _api.LMSInitialize("");
@@ -47,24 +48,25 @@ SCORM_API_JS = """\
     },
 
     set: function (key, value) {
-      if (!_ready) return;
-      _api.LMSSetValue(key, String(value));
+      if (!_ready && !this.init()) return false;
+      return _api.LMSSetValue(key, String(value));
     },
 
     get: function (key) {
-      if (!_ready) return "";
+      if (!_ready && !this.init()) return "";
       return _api.LMSGetValue(key);
     },
 
     commit: function () {
-      if (!_ready) return;
-      _api.LMSCommit("");
+      if (!_ready && !this.init()) return false;
+      return _api.LMSCommit("");
     },
 
     finish: function () {
-      if (!_ready) return;
-      _api.LMSFinish("");
+      if (!_ready && !this.init()) return false;
+      var result = _api.LMSFinish("");
       _ready = false;
+      return result;
     },
 
     /* One-call shortcut — use on your "Завершить" button */

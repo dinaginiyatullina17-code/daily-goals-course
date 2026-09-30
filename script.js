@@ -519,7 +519,6 @@ function completeCourse() {
     }
   } catch (error) {}
   applyHomeLocks();
-  document.getElementById('completion-panel')?.classList.add('show');
 }
 
 document.addEventListener('DOMContentLoaded', () => {
