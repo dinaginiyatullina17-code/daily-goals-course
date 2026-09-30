@@ -20,6 +20,8 @@ SCORM_API_JS = """\
 (function () {
   var _api = null;
   var _ready = false;
+  var _finished = false;
+  var _startedAt = new Date().getTime();
 
   function _findAPI(win) {
     var depth = 0;
@@ -36,12 +38,30 @@ SCORM_API_JS = """\
     return api;
   }
 
+  function _sessionTime() {
+    var hundredths = Math.max(0, Math.floor((new Date().getTime() - _startedAt) / 10));
+    var hours = Math.floor(hundredths / 360000);
+    hundredths -= hours * 360000;
+    var minutes = Math.floor(hundredths / 6000);
+    hundredths -= minutes * 6000;
+    var seconds = Math.floor(hundredths / 100);
+    var fraction = hundredths % 100;
+    function pad(value, width) {
+      var result = String(value);
+      while (result.length < width) result = "0" + result;
+      return result;
+    }
+    return pad(hours, 4) + ":" + pad(minutes, 2) + ":" + pad(seconds, 2) + "." + pad(fraction, 2);
+  }
+
   var SCORM = {
     init: function () {
       _api = _getAPI();
       if (!_api) { console.warn("[SCORM] LMS API not found — running outside LMS"); return false; }
       var r = _api.LMSInitialize("");
       _ready = (r === "true" || r === true);
+      _finished = false;
+      _startedAt = new Date().getTime();
       if (!_ready) console.warn("[SCORM] LMSInitialize() returned false");
       return _ready;
     },
@@ -61,8 +81,11 @@ SCORM_API_JS = """\
       _api.LMSCommit("");
     },
 
-    finish: function () {
-      if (!_ready) return;
+    finish: function (exitValue) {
+      if (!_ready || _finished) return;
+      _finished = true;
+      this.set("cmi.core.session_time", _sessionTime());
+      this.set("cmi.core.exit", exitValue || "");
       _api.LMSCommit("");
       _api.LMSFinish("");
       _ready = false;
@@ -70,17 +93,22 @@ SCORM_API_JS = """\
 
     /* One-call shortcut — use on your "Завершить" button */
     complete: function () {
-      this.set("cmi.core.lesson_status", "passed");
-      this.set("cmi.core.score.raw",     "100");
       this.set("cmi.core.score.min",     "0");
       this.set("cmi.core.score.max",     "100");
-      this.set("cmi.core.exit",          "logout");
+      this.set("cmi.core.score.raw",     "100");
+      this.set("cmi.core.lesson_status", "completed");
+      this.commit();
       this.finish();
     }
   };
 
   window.addEventListener("load",         function () { SCORM.init(); });
-  window.addEventListener("beforeunload", function () { SCORM.finish(); });
+  function suspendUnfinishedSession() {
+    if (!_ready || _finished) return;
+    SCORM.finish("suspend");
+  }
+  window.addEventListener("pagehide", suspendUnfinishedSession);
+  window.addEventListener("beforeunload", suspendUnfinishedSession);
 
   window.SCORM = SCORM;
 })();
@@ -102,13 +130,13 @@ MANIFEST_TEMPLATE = """\
   <organizations default="ORG_{course_id}">
     <organization identifier="ORG_{course_id}">
       <title>{course_title}</title>
-      <item identifier="ITEM_1" identifierref="RES_1">
+      <item identifier="{course_id}_SCO" identifierref="{course_id}_RES">
         <title>{course_title}</title>
       </item>
     </organization>
   </organizations>
   <resources>
-    <resource identifier="RES_1" type="webcontent"
+    <resource identifier="{course_id}_RES" type="webcontent"
               adlcp:scormtype="sco" href="index.html">
 {file_entries}
     </resource>
@@ -118,9 +146,9 @@ MANIFEST_TEMPLATE = """\
 
 # ── Config ─────────────────────────────────────────────────────────────────
 # Files and folders to exclude from the ZIP
-SKIP_FILES = {"scorm_pack.py", "HERO-PROMPT.txt", ".DS_Store", "Thumbs.db"}
+SKIP_FILES = {"scorm_pack.py", "HERO-PROMPT.txt", "SCORM_QA_PRINCIPLES.md", ".DS_Store", "Thumbs.db"}
 SKIP_DIRS  = {".git", ".svn", "__pycache__", "node_modules", ".vscode"}
-SKIP_EXTS  = {".pyc", ".pyo", ".zip", ".py", ".docx"}
+SKIP_EXTS  = {".pyc", ".pyo", ".zip", ".py", ".docx", ".md", ".pdf"}
 COURSE_IDENTIFIER = "kak_upravlyat_dostizheniem_celey_na_den"
 
 
@@ -198,10 +226,10 @@ def build():
     # Корпоративные шрифты остаются в общей папке reusable, но при упаковке
     # попадают внутрь автономного SCORM-пакета.
     shared_fonts = base.parent / "reusable" / "Fonts"
-    for font_name in ("FLAME-REGULAR.OTF", "FLAME-BOLD.OTF"):
-        font_path = shared_fonts / font_name
+    for source_name, archive_name in (("FLAME-REGULAR.OTF", "Flame-Regular.otf"), ("FLAME-BOLD.OTF", "Flame-Bold.otf")):
+        font_path = shared_fonts / source_name
         if font_path.exists():
-            files.append((f"Fonts/{font_name}", font_path))
+            files.append((f"fonts/{archive_name}", font_path))
 
     # All arc names for <file href="..."/> entries (includes scorm_api.js)
     all_arcs = sorted({arc for arc, _ in files} | {"scorm_api.js"})
@@ -214,15 +242,30 @@ def build():
     )
 
     existed = zip_path.exists()
-    with zipfile.ZipFile(zip_path, "w", zipfile.ZIP_DEFLATED) as zf:
-        zf.writestr("imsmanifest.xml", manifest.encode("utf-8"))
-        zf.writestr("scorm_api.js",    SCORM_API_JS.encode("utf-8"))
+    def dos_info(name: str, is_dir: bool = False) -> zipfile.ZipInfo:
+        info = zipfile.ZipInfo(name + ("/" if is_dir and not name.endswith("/") else ""))
+        info.create_system = 0
+        info.external_attr = 0x10 if is_dir else 0x20
+        info.compress_type = zipfile.ZIP_STORED if is_dir else zipfile.ZIP_DEFLATED
+        return info
+
+    with zipfile.ZipFile(zip_path, "w") as zf:
+        folder_names = set()
+        for arc_name in all_arcs:
+            parts = arc_name.split("/")[:-1]
+            for index in range(1, len(parts) + 1):
+                folder_names.add("/".join(parts[:index]))
+
+        zf.writestr(dos_info("imsmanifest.xml"), manifest.encode("utf-8"))
+        zf.writestr(dos_info("scorm_api.js"), SCORM_API_JS.encode("utf-8"))
+        for folder_name in sorted(folder_names):
+            zf.writestr(dos_info(folder_name, True), b"")
 
         for arc_name, abs_path in files:
             data = abs_path.read_bytes()
             if arc_name == "index.html":
                 data = inject_script(data)
-            zf.writestr(arc_name, data)
+            zf.writestr(dos_info(arc_name), data)
 
     action = "Repacked" if existed else "Packed"
     print(f"[SCORM] {action}: {zip_path.name}")
