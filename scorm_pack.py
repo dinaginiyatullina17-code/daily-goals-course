@@ -74,7 +74,7 @@ SCORM_API_JS = """\
       this.set("cmi.core.score.raw",     "100");
       this.set("cmi.core.score.min",     "0");
       this.set("cmi.core.score.max",     "100");
-      this.set("cmi.core.exit",          "normal");
+      this.set("cmi.core.exit",          "logout");
       this.finish();
     }
   };
