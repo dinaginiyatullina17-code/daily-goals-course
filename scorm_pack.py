@@ -20,8 +20,6 @@ SCORM_API_JS = """\
 (function () {
   var _api = null;
   var _ready = false;
-  var _finished = false;
-  var _startedAt = new Date().getTime();
 
   function _findAPI(win) {
     var depth = 0;
@@ -38,30 +36,12 @@ SCORM_API_JS = """\
     return api;
   }
 
-  function _sessionTime() {
-    var hundredths = Math.max(0, Math.floor((new Date().getTime() - _startedAt) / 10));
-    var hours = Math.floor(hundredths / 360000);
-    hundredths -= hours * 360000;
-    var minutes = Math.floor(hundredths / 6000);
-    hundredths -= minutes * 6000;
-    var seconds = Math.floor(hundredths / 100);
-    var fraction = hundredths % 100;
-    function pad(value, width) {
-      var result = String(value);
-      while (result.length < width) result = "0" + result;
-      return result;
-    }
-    return pad(hours, 4) + ":" + pad(minutes, 2) + ":" + pad(seconds, 2) + "." + pad(fraction, 2);
-  }
-
   var SCORM = {
     init: function () {
       _api = _getAPI();
       if (!_api) { console.warn("[SCORM] LMS API not found — running outside LMS"); return false; }
       var r = _api.LMSInitialize("");
       _ready = (r === "true" || r === true);
-      _finished = false;
-      _startedAt = new Date().getTime();
       if (!_ready) console.warn("[SCORM] LMSInitialize() returned false");
       return _ready;
     },
@@ -81,11 +61,8 @@ SCORM_API_JS = """\
       _api.LMSCommit("");
     },
 
-    finish: function (exitValue) {
-      if (!_ready || _finished) return;
-      _finished = true;
-      this.set("cmi.core.session_time", _sessionTime());
-      this.set("cmi.core.exit", exitValue || "");
+    finish: function () {
+      if (!_ready) return;
       _api.LMSCommit("");
       _api.LMSFinish("");
       _ready = false;
@@ -93,22 +70,17 @@ SCORM_API_JS = """\
 
     /* One-call shortcut — use on your "Завершить" button */
     complete: function () {
+      this.set("cmi.core.lesson_status", "passed");
+      this.set("cmi.core.score.raw",     "100");
       this.set("cmi.core.score.min",     "0");
       this.set("cmi.core.score.max",     "100");
-      this.set("cmi.core.score.raw",     "100");
-      this.set("cmi.core.lesson_status", "completed");
-      this.commit();
+      this.set("cmi.core.exit",          "logout");
       this.finish();
     }
   };
 
   window.addEventListener("load",         function () { SCORM.init(); });
-  function suspendUnfinishedSession() {
-    if (!_ready || _finished) return;
-    SCORM.finish("suspend");
-  }
-  window.addEventListener("pagehide", suspendUnfinishedSession);
-  window.addEventListener("beforeunload", suspendUnfinishedSession);
+  window.addEventListener("beforeunload", function () { SCORM.finish(); });
 
   window.SCORM = SCORM;
 })();
@@ -130,13 +102,13 @@ MANIFEST_TEMPLATE = """\
   <organizations default="ORG_{course_id}">
     <organization identifier="ORG_{course_id}">
       <title>{course_title}</title>
-      <item identifier="{course_id}_SCO" identifierref="{course_id}_RES">
+      <item identifier="ITEM_1" identifierref="RES_1">
         <title>{course_title}</title>
       </item>
     </organization>
   </organizations>
   <resources>
-    <resource identifier="{course_id}_RES" type="webcontent"
+    <resource identifier="RES_1" type="webcontent"
               adlcp:scormtype="sco" href="index.html">
 {file_entries}
     </resource>
