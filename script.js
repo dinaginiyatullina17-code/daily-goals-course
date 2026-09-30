@@ -516,6 +516,7 @@ function completeCourse() {
           SCORM.set('cmi.core.exit', 'logout');
           if (typeof SCORM.commit === 'function') SCORM.commit();
           if (typeof SCORM.finish === 'function') SCORM.finish();
+          window.close();
         } catch (error) {}
       }, 100);
     } else if (window.SCORM && typeof SCORM.complete === 'function') {
