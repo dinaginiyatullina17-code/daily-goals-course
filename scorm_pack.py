@@ -20,6 +20,7 @@ SCORM_API_JS = """\
 (function () {
   var _api = null;
   var _ready = false;
+  var _terminated = false;
 
   function _findAPI(win) {
     var depth = 0;
@@ -38,6 +39,7 @@ SCORM_API_JS = """\
 
   var SCORM = {
     init: function () {
+      if (_terminated) return false;
       if (_ready) return true;
       _api = _getAPI();
       if (!_api) { console.warn("[SCORM] LMS API not found — running outside LMS"); return false; }
@@ -66,6 +68,7 @@ SCORM_API_JS = """\
       if (!_ready && !this.init()) return false;
       var result = _api.LMSFinish("");
       _ready = false;
+      _terminated = true;
       return result;
     },
 
