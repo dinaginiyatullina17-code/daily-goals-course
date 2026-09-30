@@ -1,9 +1,9 @@
 #!/usr/bin/env python3
 """
-SCORM 2004 packer
+SCORM 1.2 packer
 ----------------
 Place this file in any web-project folder and run:  python scorm_pack.py
-Produces a ready-to-upload SCORM 2004 ZIP next to this script.
+Produces a ready-to-upload SCORM 1.2 ZIP next to this script.
 
 Button in your HTML:
     <button onclick="SCORM.complete()">Завершить</button>
@@ -14,20 +14,20 @@ import re
 import zipfile
 from pathlib import Path
 
-# ── SCORM 2004 API (injected into index.html inside the ZIP) ─────────────
+# ── SCORM 1.2 API (injected into index.html inside the ZIP) ───────────────
 SCORM_API_JS = """\
-/* SCORM 2004 API wrapper — auto-injected by scorm_pack.py */
+/* SCORM 1.2 API wrapper — auto-injected by scorm_pack.py */
 (function () {
   var _api = null;
   var _ready = false;
 
   function _findAPI(win) {
     var depth = 0;
-    while (!win.API_1484_11 && win.parent && win.parent !== win) {
-      if (++depth > 500) return null;
+    while (!win.API && win.parent && win.parent !== win) {
+      if (++depth > 7) return null;
       win = win.parent;
     }
-    return win.API_1484_11 || null;
+    return win.API || null;
   }
 
   function _getAPI() {
@@ -40,43 +40,50 @@ SCORM_API_JS = """\
     init: function () {
       _api = _getAPI();
       if (!_api) { console.warn("[SCORM] LMS API not found — running outside LMS"); return false; }
-      var r = _api.Initialize("");
+      var r = _api.LMSInitialize("");
       _ready = (r === "true" || r === true);
-      if (!_ready) console.warn("[SCORM] Initialize() returned false");
+      if (!_ready) console.warn("[SCORM] LMSInitialize() returned false");
       return _ready;
     },
 
     set: function (key, value) {
-      if (!_ready) return;
-      _api.SetValue(key, String(value));
+      if (!_ready) return false;
+      var r = _api.LMSSetValue(key, String(value));
+      return r === "true" || r === true;
     },
 
     get: function (key) {
       if (!_ready) return "";
-      return _api.GetValue(key);
+      return _api.LMSGetValue(key);
     },
 
     commit: function () {
-      if (!_ready) return;
-      _api.Commit("");
+      if (!_ready) return false;
+      var r = _api.LMSCommit("");
+      return r === "true" || r === true;
     },
 
     finish: function () {
-      if (!_ready) return;
-      _api.Commit("");
-      _api.Terminate("");
+      if (!_ready) return false;
+      _api.LMSCommit("");
+      var r = _api.LMSFinish("");
       _ready = false;
+      return r === "true" || r === true;
     },
 
     /* One-call shortcut — use on your "Завершить" button */
     complete: function () {
-      this.set("cmi.completion_status", "completed");
-      this.set("cmi.success_status",    "passed");
-      this.set("cmi.score.min",         "0");
-      this.set("cmi.score.max",         "100");
-      this.set("cmi.score.raw",         "100");
-      this.set("cmi.score.scaled",      "1");
+      if (!_ready) return false;
+      this.set("cmi.core.lesson_status", "passed");
+      this.set("cmi.core.score.raw",     "100");
+      this.set("cmi.core.score.min",     "0");
+      this.set("cmi.core.score.max",     "100");
       this.commit();
+      this.set("cmi.core.exit",          "logout");
+      this.commit();
+      var r = _api.LMSFinish("");
+      _ready = false;
+      return r === "true" || r === true;
     }
   };
 
@@ -87,22 +94,18 @@ SCORM_API_JS = """\
 })();
 """
 
-# ── imsmanifest.xml template (SCORM 2004) ────────────────────────────────
+# ── imsmanifest.xml template (SCORM 1.2) ──────────────────────────────────
 MANIFEST_TEMPLATE = """\
 <?xml version="1.0" encoding="UTF-8"?>
-  <manifest identifier="{course_id}" version="1.3"
-  xmlns="http://www.imsglobal.org/xsd/imscp_v1p1"
-  xmlns:adlcp="http://www.adlnet.org/xsd/adlcp_v1p3"
-  xmlns:adlseq="http://www.adlnet.org/xsd/adlseq_v1p3"
-  xmlns:imsss="http://www.imsglobal.org/xsd/imsss"
+<manifest identifier="{course_id}" version="1.0"
+  xmlns="http://www.imsproject.org/xsd/imscp_rootv1p1p2"
+  xmlns:adlcp="http://www.adlnet.org/xsd/adlcp_rootv1p2"
   xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-  xsi:schemaLocation="http://www.imsglobal.org/xsd/imscp_v1p1 imscp_v1p1.xsd
-                      http://www.adlnet.org/xsd/adlcp_v1p3 adlcp_v1p3.xsd
-                      http://www.adlnet.org/xsd/adlseq_v1p3 adlseq_v1p3.xsd
-                      http://www.imsglobal.org/xsd/imsss imsss_v1p0.xsd">
+  xsi:schemaLocation="http://www.imsproject.org/xsd/imscp_rootv1p1p2 imscp_rootv1p1p2.xsd
+                      http://www.adlnet.org/xsd/adlcp_rootv1p2 adlcp_rootv1p2.xsd">
   <metadata>
     <schema>ADL SCORM</schema>
-    <schemaversion>2004 4th Edition</schemaversion>
+    <schemaversion>1.2</schemaversion>
   </metadata>
   <organizations default="ORG_{course_id}">
     <organization identifier="ORG_{course_id}">
@@ -110,14 +113,11 @@ MANIFEST_TEMPLATE = """\
       <item identifier="ITEM_1" identifierref="RES_1">
         <title>{course_title}</title>
       </item>
-      <imsss:sequencing>
-        <imsss:controlMode flow="true"/>
-      </imsss:sequencing>
     </organization>
   </organizations>
   <resources>
     <resource identifier="RES_1" type="webcontent"
-              adlcp:scormType="sco" href="index.html">
+              adlcp:scormtype="sco" href="index.html">
 {file_entries}
     </resource>
   </resources>
@@ -146,7 +146,7 @@ def xml_escape(text: str) -> str:
 
 def inject_script(html_bytes: bytes) -> bytes:
     """Insert <script src="scorm_api.js"></script> before </head> (or at start)."""
-    tag = b'<script src="scorm_api.js?v=6"></script>'
+    tag = b'<script src="scorm_api.js?v=7"></script>'
     lower = html_bytes.lower()
 
     pos = lower.find(b"</head>")
