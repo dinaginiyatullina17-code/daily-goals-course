@@ -511,13 +511,9 @@ function completeCourse() {
       SCORM.set('cmi.core.score.min', '0');
       SCORM.set('cmi.core.score.max', '100');
       if (typeof SCORM.commit === 'function') SCORM.commit();
-      setTimeout(() => {
-        try {
-          SCORM.set('cmi.core.exit', 'logout');
-          if (typeof SCORM.commit === 'function') SCORM.commit();
-          if (typeof SCORM.finish === 'function') SCORM.finish();
-        } catch (error) {}
-      }, 100);
+      SCORM.set('cmi.core.exit', 'logout');
+      if (typeof SCORM.commit === 'function') SCORM.commit();
+      if (typeof SCORM.finish === 'function') SCORM.finish();
     } else if (window.SCORM && typeof SCORM.complete === 'function') {
       SCORM.complete();
     }
