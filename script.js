@@ -500,23 +500,6 @@ function printChecklist() {
   }, 150);
 }
 
-function requestCourseWindowClose() {
-  const closeMessage = { type: 'scorm-course-completed', action: 'close', completed: true };
-  const possibleHosts = [window.opener, window.parent, window.top];
-
-  possibleHosts.forEach(host => {
-    if (!host || host === window) return;
-    try { host.postMessage(closeMessage, '*'); } catch (error) {}
-    try {
-      ['closeCourse', 'closeWindow', 'CloseWindow', 'closeLesson', 'finishCourse'].forEach(method => {
-        if (typeof host[method] === 'function') host[method]();
-      });
-    } catch (error) {}
-  });
-
-  try { window.close(); } catch (error) {}
-}
-
 function completeCourse() {
   unlockedChapters = CHAPTER_ORDER.length;
   saveProgress();
@@ -526,7 +509,6 @@ function completeCourse() {
   }
   applyHomeLocks();
   document.getElementById('completion-panel')?.classList.add('show');
-  requestCourseWindowClose();
 }
 
 document.addEventListener('DOMContentLoaded', () => {

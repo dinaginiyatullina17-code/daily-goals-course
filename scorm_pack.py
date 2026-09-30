@@ -63,7 +63,6 @@ SCORM_API_JS = """\
 
     finish: function () {
       if (!_ready) return;
-      _api.LMSCommit("");
       _api.LMSFinish("");
       _ready = false;
     },
@@ -74,8 +73,13 @@ SCORM_API_JS = """\
       this.set("cmi.core.score.raw",     "100");
       this.set("cmi.core.score.min",     "0");
       this.set("cmi.core.score.max",     "100");
-      this.set("cmi.core.exit",          "logout");
-      this.finish();
+      this.commit();
+      var self = this;
+      window.setTimeout(function () {
+        self.set("cmi.core.exit", "logout");
+        self.commit();
+        self.finish();
+      }, 100);
     }
   };
 
