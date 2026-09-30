@@ -105,7 +105,7 @@ function startCourse() {
   if (window.SCORM && typeof SCORM.set === 'function') {
     try {
       SCORM.set('cmi.suspend_data', '');
-      SCORM.set('cmi.core.lesson_status', 'incomplete');
+      SCORM.set('cmi.completion_status', 'incomplete');
       SCORM.commit?.();
     } catch (error) {}
   }
@@ -198,8 +198,8 @@ function saveProgress(options = {}) {
   if (!options.localOnly && window.SCORM && typeof SCORM.set === 'function') {
     try {
       SCORM.set('cmi.suspend_data', state);
-      const status = SCORM.get?.('cmi.core.lesson_status');
-      if (!status || status === 'not attempted' || status === 'unknown') SCORM.set('cmi.core.lesson_status', 'incomplete');
+      const status = SCORM.get?.('cmi.completion_status');
+      if (!status || status === 'not attempted' || status === 'unknown') SCORM.set('cmi.completion_status', 'incomplete');
       SCORM.commit?.();
     } catch (error) {}
   }
@@ -505,16 +505,7 @@ function completeCourse() {
   saveProgress({ localOnly: true });
   try { localStorage.setItem(`${PROGRESS_KEY}_completed`, 'passed'); } catch (error) {}
   try {
-    if (window.SCORM && typeof SCORM.set === 'function') {
-      SCORM.set('cmi.core.lesson_status', 'passed');
-      SCORM.set('cmi.core.score.raw', '100');
-      SCORM.set('cmi.core.score.min', '0');
-      SCORM.set('cmi.core.score.max', '100');
-      if (typeof SCORM.commit === 'function') SCORM.commit();
-      SCORM.set('cmi.core.exit', 'logout');
-      if (typeof SCORM.commit === 'function') SCORM.commit();
-      if (typeof SCORM.finish === 'function') SCORM.finish();
-    } else if (window.SCORM && typeof SCORM.complete === 'function') {
+    if (window.SCORM && typeof SCORM.complete === 'function') {
       SCORM.complete();
     }
   } catch (error) {}
