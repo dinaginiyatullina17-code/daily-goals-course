@@ -1,5 +1,13 @@
 {
   "identifier": "daily_goals_course_progress_v12",
   "title": "Как управлять достижением целей на день",
-  "scorm_id": "kak_upravlyat_dostizheniem_celey_na_den"
+  "scorm_id": "kak_upravlyat_dostizheniem_celey_na_den",
+  "scorm_ids": {
+    "manifest": "kak_upravlyat_dostizheniem_celey_na_den",
+    "organization": "ORG_kak_upravlyat_dostizheniem_celey_na_den",
+    "item": "ITEM_1",
+    "resource": "RES_1"
+  },
+  "previous_zip": "kak_upravlyat_dostizheniem_celey_na_den.zip",
+  "complete_mode": "lms"
 }

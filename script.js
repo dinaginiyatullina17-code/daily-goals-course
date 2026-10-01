@@ -11,8 +11,6 @@ const CHAPTER_NAMES = {
   summary: 'Главное по теме'
 };
 
-const PROGRESS_KEY = 'daily_goals_course_progress_v12';
-const PROGRESS_VERSION = 12;
 let currentPage = 'home';
 let unlockedChapters = 1;
 let fadeObserver;
@@ -100,17 +98,6 @@ function resetCourseInteractions() {
 function startCourse() {
   unlockedChapters = 1;
   resetCourseInteractions();
-  try {
-    localStorage.removeItem(PROGRESS_KEY);
-    localStorage.removeItem(`${PROGRESS_KEY}_completed`);
-  } catch (error) {}
-  if (window.SCORM && typeof SCORM.set === 'function') {
-    try {
-      SCORM.set('cmi.suspend_data', '');
-      SCORM.set('cmi.core.lesson_status', 'incomplete');
-      SCORM.commit?.();
-    } catch (error) {}
-  }
   applyHomeLocks();
   navigateTo('intro');
 }
@@ -195,37 +182,11 @@ function applyHomeLocks() {
 }
 
 function saveProgress(options = {}) {
-  const state = JSON.stringify({
-    version: PROGRESS_VERSION,
-    unlocked: unlockedChapters,
-    page: currentPage
-  });
-  try { localStorage.setItem(PROGRESS_KEY, state); } catch (error) {}
-  if (!options.localOnly && window.SCORM && typeof SCORM.set === 'function') {
-    try {
-      SCORM.set('cmi.suspend_data', state);
-      const status = SCORM.get?.('cmi.core.lesson_status');
-      if (!status || status === 'not attempted' || status === 'unknown') SCORM.set('cmi.core.lesson_status', 'incomplete');
-      SCORM.commit?.();
-    } catch (error) {}
-  }
+  if (window.KU?.progress) KU.progress.setUnlocked(unlockedChapters);
 }
 
 function loadProgress() {
-  unlockedChapters = 1;
-  let stateJson = '';
-  if (window.SCORM && typeof SCORM.get === 'function') {
-    try { stateJson = SCORM.get('cmi.suspend_data') || ''; } catch (error) {}
-  }
-  if (!stateJson) {
-    try { stateJson = localStorage.getItem(PROGRESS_KEY) || ''; } catch (error) {}
-  }
-  try {
-    const state = JSON.parse(stateJson);
-    if (state && state.version === PROGRESS_VERSION) {
-      unlockedChapters = Math.max(1, Math.min(CHAPTER_ORDER.length, Number(state.unlocked) || 1));
-    }
-  } catch (error) {}
+  unlockedChapters = Math.max(1, Math.min(CHAPTER_ORDER.length, Number(window.KU?.progress?.unlocked()) || 1));
   progressLoaded = true;
   applyHomeLocks();
   navigateTo('home');
@@ -522,35 +483,20 @@ function printChecklist() {
   }, 150);
 }
 
-function completeCourse() {
-  try { localStorage.setItem(`${PROGRESS_KEY}_completed`, 'passed'); } catch (error) {}
-  unlockedChapters = CHAPTER_ORDER.length;
-  saveProgress();
-  applyHomeLocks();
-  if (window.SCORM && typeof SCORM.set === 'function') {
-    SCORM.set('cmi.core.lesson_status', 'passed');
-    SCORM.set('cmi.core.score.raw', '100');
-    SCORM.set('cmi.core.score.min', '0');
-    SCORM.set('cmi.core.score.max', '100');
-    SCORM.commit();
-    setTimeout(() => {
-      SCORM.finish('logout');
-    }, 100);
-  }
+function showCourseCompleted() {
   document.getElementById('completion-panel')?.classList.add('show');
   const button = document.getElementById('ku-complete-button');
   if (button) {
-    button.textContent = 'Курс завершён';
-    button.disabled = true;
+    button.textContent = 'Сохраняем результат…';
   }
 }
 
 document.addEventListener('click', event => {
-  if (event.target.closest('#ku-complete-button')) completeCourse();
   if (event.target.closest('.choice-grid button, .choice-list button, .smart-card, .reason-card button, #smart-matching button')) {
     setTimeout(() => { if (progressLoaded) saveProgress(); }, 0);
   }
 });
+document.addEventListener('ku:completed', showCourseCompleted);
 
 document.addEventListener('change', event => {
   if (event.target.matches('.understanding-checklist input, #smart-matching select')) {
@@ -566,4 +512,4 @@ document.addEventListener('DOMContentLoaded', () => {
   navigateTo('home');
 });
 window.addEventListener('pageshow', resetSmartMatching);
-window.addEventListener('load', loadProgress);
+document.addEventListener('ku:ready', loadProgress);
