@@ -454,6 +454,41 @@ h1, h2, h3, .eyebrow, .chapter-num, .btn-primary { font-family: var(--font-head)
   .case-debrief > div b { justify-self: center; transform: rotate(90deg); }
 }
 
+/* Содержание курса: карточки глав без соединительной линии. */
+#course-contents { align-content: start; padding-top: clamp(3rem, 6vw, 5.5rem); }
+#course-contents .home-heading { display: grid; gap: 1rem; margin: 0 0 2rem; }
+#course-contents .home-heading h2 { margin: 0; }
+#course-contents .home-heading > p { max-width: 42rem; margin: 0; color: var(--ku-text-soft); font-size: 1.05rem; }
+.course-overview-meta { display: flex; flex-wrap: wrap; gap: .65rem; }
+.course-overview-meta span { display: inline-flex; align-items: center; min-height: 2.2rem; padding: .45rem .8rem; border-radius: var(--ku-radius-pill); background: var(--ku-brand-soft); color: var(--ku-brand-strong); font-size: .86rem; font-weight: 800; }
+#course-contents .chapter-grid { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 1rem; padding: 0; }
+#course-contents .chapter-grid::before { display: none; }
+#course-contents .chapter-card,
+#course-contents .chapter-card.wide,
+#course-contents .chapter-card:nth-child(n) { position: relative; width: 100%; min-height: 9.5rem; grid-column: auto; grid-row: auto; justify-self: stretch; display: grid; grid-template-columns: 3.25rem minmax(0, 1fr) auto; align-items: center; gap: 1rem; padding: 1.35rem; border: 1px solid var(--ku-border); border-radius: var(--ku-radius-l); background: var(--ku-card); box-shadow: var(--ku-shadow-xs); text-align: left; }
+#course-contents .chapter-card::before,
+#course-contents .chapter-card::after { display: none; }
+#course-contents .chapter-card:hover { transform: translateY(-3px); border-color: var(--ku-brand); box-shadow: var(--ku-shadow-s); }
+#course-contents .chapter-num { position: static; display: grid; place-items: center; width: 3.25rem; height: 3.25rem; border-radius: 1rem; background: var(--ku-brand); color: var(--ku-brand-on); font-size: .9rem; font-weight: 800; transform: none; }
+#course-contents .chapter-copy { min-height: 0; align-items: flex-start; gap: .45rem; padding: 0; }
+#course-contents .chapter-copy b { font-size: 1.15rem; line-height: 1.2; }
+#course-contents .chapter-copy small { font-size: .92rem; line-height: 1.4; text-align: left; }
+#course-contents .chapter-arrow { position: static; display: grid !important; place-items: center; width: 2.5rem; height: 2.5rem; border-radius: var(--ku-radius-pill); background: var(--ku-brand-soft); color: var(--ku-brand-strong); font-size: 1.1rem; }
+#course-contents .chapter-lock { display: none !important; }
+#course-contents .chapter-card.locked { opacity: .62; background: var(--ku-surface-2); filter: none; }
+#course-contents .chapter-card.locked .chapter-num { background: var(--ku-divider); color: var(--ku-text-soft); }
+#course-contents .chapter-card.locked .chapter-arrow { background: transparent; color: var(--ku-text-soft); }
+#course-contents .chapter-card.locked .chapter-arrow::before { content: "закрыто"; font-size: .7rem; font-weight: 800; text-transform: uppercase; }
+#course-contents .chapter-card.locked .chapter-arrow { font-size: 0; width: auto; }
+
+@media (max-width: 760px) {
+  #course-contents .chapter-grid { grid-template-columns: 1fr; }
+  #course-contents .chapter-card,
+  #course-contents .chapter-card.wide,
+  #course-contents .chapter-card:nth-child(n) { min-height: 8.5rem; grid-template-columns: 2.8rem minmax(0, 1fr) auto; padding: 1.1rem; }
+  #course-contents .chapter-num { width: 2.8rem; height: 2.8rem; border-radius: .85rem; }
+}
+
 /* МС · Управление рестораном: адаптация авторской вёрстки к KU DS. */
 body { color: var(--ku-text); background: var(--ku-bg); font-family: var(--ku-font-body); font-size: .94rem; }
 h1, h2, h3, h4, .eyebrow, .chapter-num, .btn-primary, .chapter-copy b, .section-title h2, .intro-flow b, .completion-card h2 { font-family: var(--ku-font-display); font-weight: 750; letter-spacing: -.035em; }
