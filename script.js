@@ -224,7 +224,6 @@ function saveProgress(options = {}) {
 
 function loadProgress() {
   unlockedChapters = 1;
-  let savedPage = 'home';
   let stateJson = '';
   if (window.SCORM && typeof SCORM.get === 'function') {
     try { stateJson = SCORM.get('cmi.suspend_data') || ''; } catch (error) {}
@@ -236,9 +235,6 @@ function loadProgress() {
     const state = JSON.parse(stateJson);
     if (state && state.version === PROGRESS_VERSION) {
       unlockedChapters = Math.max(1, Math.min(CHAPTER_ORDER.length, Number(state.unlocked) || 1));
-      if (state.page === 'home' || CHAPTER_ORDER.includes(state.page)) savedPage = state.page;
-      const savedIndex = CHAPTER_ORDER.indexOf(savedPage);
-      if (savedIndex >= unlockedChapters) savedPage = CHAPTER_ORDER[unlockedChapters - 1];
       const viewedItems = [...document.querySelectorAll('.smart-card, .reason-card, .question-guidance')];
       if (Array.isArray(state.viewed)) state.viewed.forEach(index => { if (viewedItems[index]) viewedItems[index].dataset.viewed = 'true'; });
       const choiceGroups = [...document.querySelectorAll('.choice-grid, .choice-list')];
@@ -264,7 +260,7 @@ function loadProgress() {
   } catch (error) {}
   progressLoaded = true;
   applyHomeLocks();
-  navigateTo(savedPage);
+  navigateTo('home');
 }
 
 const CHOICE_FEEDBACK = {
