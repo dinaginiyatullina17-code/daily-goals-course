@@ -1,87 +1,107 @@
-/* SCORM 1.2 runtime: completion is sent only by SCORM.complete(). */
+/* SCORM 1.2 runtime for WebSoft/WebTutor. */
 (function () {
-  "use strict";
+  'use strict';
 
   var api = null;
   var ready = false;
   var finished = false;
-  var startedAt = new Date().getTime();
+  var completed = false;
+  var startedAt = Date.now();
 
-  function findAPI(win) {
-    try {
-      var depth = 0;
-      while (win && depth++ < 10) {
-        if (win.API) return win.API;
-        if (win === win.parent) break;
-        win = win.parent;
+  function findAPI(start) {
+    var current = start;
+    for (var depth = 0; current && depth <= 10; depth += 1) {
+      try {
+        if (current.API) return current.API;
+        if (!current.parent || current.parent === current) break;
+        current = current.parent;
+      } catch (error) {
+        break;
       }
-    } catch (error) {}
+    }
     return null;
   }
 
-  function succeeded(result) {
-    return result === true || result === "true";
-  }
-
-  function sessionTime() {
-    var elapsed = Math.max(0, Math.floor((new Date().getTime() - startedAt) / 10));
-    var hours = Math.floor(elapsed / 360000);
-    elapsed -= hours * 360000;
-    var minutes = Math.floor(elapsed / 6000);
-    elapsed -= minutes * 6000;
-    var seconds = Math.floor(elapsed / 100);
-    var hundredths = elapsed % 100;
-    function pad(value, width) {
-      var text = String(value);
-      while (text.length < width) text = "0" + text;
-      return text;
+  function getAPI() {
+    var found = findAPI(window);
+    if (!found) {
+      try { if (window.opener) found = findAPI(window.opener); } catch (error) {}
     }
-    return pad(hours, 4) + ":" + pad(minutes, 2) + ":" +
-      pad(seconds, 2) + "." + pad(hundredths, 2);
+    return found;
   }
 
-  function init() {
-    api = findAPI(window) || (window.opener ? findAPI(window.opener) : null);
-    if (!api) return false;
-    ready = succeeded(api.LMSInitialize(""));
-    startedAt = new Date().getTime();
-    return ready;
+  function formatSessionTime(milliseconds) {
+    var hundredths = Math.max(0, Math.floor(milliseconds / 10));
+    var hours = Math.floor(hundredths / 360000);
+    var minutes = Math.floor((hundredths % 360000) / 6000);
+    var seconds = Math.floor((hundredths % 6000) / 100);
+    var fraction = hundredths % 100;
+    return String(hours).padStart(4, '0') + ':' +
+      String(minutes).padStart(2, '0') + ':' +
+      String(seconds).padStart(2, '0') + '.' +
+      String(fraction).padStart(2, '0');
   }
 
-  function set(key, value) {
-    return ready && succeeded(api.LMSSetValue(key, String(value)));
-  }
-
-  function get(key) {
-    if (!ready) return "";
-    try { return api.LMSGetValue(key) || ""; } catch (error) { return ""; }
+  function setValue(key, value) {
+    if (!ready || finished) return false;
+    return api.LMSSetValue(key, String(value));
   }
 
   function commit() {
-    return ready && succeeded(api.LMSCommit(""));
+    if (!ready || finished) return false;
+    return api.LMSCommit('');
   }
 
-  function finish() {
+  function finish(exitValue) {
     if (!ready || finished) return false;
-    var result = api.LMSFinish("");
+    setValue('cmi.core.session_time', formatSessionTime(Date.now() - startedAt));
+    setValue('cmi.core.exit', exitValue);
+    commit();
     finished = true;
     ready = false;
-    return succeeded(result);
+    return api.LMSFinish('');
   }
 
-  function complete() {
-    if (!ready || finished) return false;
-    set("cmi.core.score.min", "0");
-    set("cmi.core.score.max", "100");
-    set("cmi.core.score.raw", "100");
-    set("cmi.core.lesson_status", "completed");
-    commit();
-    set("cmi.core.session_time", sessionTime());
-    set("cmi.core.exit", "");
-    commit();
-    return finish();
-  }
+  var SCORM = {
+    init: function () {
+      if (ready || finished) return ready;
+      api = getAPI();
+      if (!api) return false;
+      var result = api.LMSInitialize('');
+      ready = result === true || result === 'true';
+      if (!ready) return false;
+      var status = this.get('cmi.core.lesson_status');
+      completed = status === 'completed' || status === 'passed';
+      if (!completed && (!status || status === 'not attempted' || status === 'unknown')) {
+        setValue('cmi.core.lesson_status', 'incomplete');
+        commit();
+      }
+      return true;
+    },
+    set: setValue,
+    get: function (key) {
+      if (!ready || finished) return '';
+      return api.LMSGetValue(key);
+    },
+    commit: commit,
+    complete: function () {
+      if (!ready || finished) return false;
+      this.set('cmi.core.score.min', '0');
+      this.set('cmi.core.score.max', '100');
+      this.set('cmi.core.score.raw', '100');
+      this.set('cmi.core.lesson_status', 'completed');
+      completed = true;
+      commit();
+      return finish('');
+    },
+    suspend: function () {
+      if (completed || !ready || finished) return false;
+      return finish('suspend');
+    }
+  };
 
-  window.SCORM = { init: init, set: set, get: get, commit: commit, finish: finish, complete: complete };
-  window.addEventListener("load", init);
+  window.SCORM = SCORM;
+  window.addEventListener('load', function () { SCORM.init(); });
+  window.addEventListener('pagehide', function () { SCORM.suspend(); });
+  window.addEventListener('beforeunload', function () { SCORM.suspend(); });
 })();

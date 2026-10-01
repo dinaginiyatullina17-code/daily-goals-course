@@ -501,19 +501,19 @@ function printChecklist() {
 }
 
 function completeCourse() {
+  try { localStorage.setItem(`${PROGRESS_KEY}_completed`, 'completed'); } catch (error) {}
   unlockedChapters = CHAPTER_ORDER.length;
-  saveProgress({ localOnly: true });
-  try { localStorage.setItem(`${PROGRESS_KEY}_completed`, 'passed'); } catch (error) {}
-  try {
-    if (window.SCORM && typeof SCORM.complete === 'function') SCORM.complete();
-  } catch (error) {}
-  const button = document.querySelector('#page-summary .completion-card .btn-primary');
+  saveProgress();
+  applyHomeLocks();
+  if (window.SCORM && typeof SCORM.complete === 'function') {
+    SCORM.complete();
+  }
+  document.getElementById('completion-panel')?.classList.add('show');
+  const button = document.getElementById('ku-complete-button');
   if (button) {
     button.textContent = 'Курс завершён';
     button.disabled = true;
-    button.setAttribute('aria-disabled', 'true');
   }
-  applyHomeLocks();
 }
 
 document.addEventListener('click', event => {
