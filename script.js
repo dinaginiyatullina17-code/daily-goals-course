@@ -16,6 +16,7 @@ const PROGRESS_VERSION = 9;
 let currentPage = 'home';
 let unlockedChapters = 1;
 let fadeObserver;
+let progressLoaded = false;
 
 function navigateTo(pageId) {
   const target = document.getElementById(`page-${pageId}`);
@@ -54,6 +55,7 @@ function navigateTo(pageId) {
 
   applyHomeLocks();
   setTimeout(initFadeIn, 30);
+  if (progressLoaded) saveProgress();
 }
 
 function goToPreviousPage() {
@@ -207,7 +209,26 @@ function saveProgress(options = {}) {
 
 function loadProgress() {
   unlockedChapters = 1;
+  let savedPage = 'home';
+  let stateJson = '';
+  if (window.SCORM && typeof SCORM.get === 'function') {
+    try { stateJson = SCORM.get('cmi.suspend_data') || ''; } catch (error) {}
+  }
+  if (!stateJson) {
+    try { stateJson = localStorage.getItem(PROGRESS_KEY) || ''; } catch (error) {}
+  }
+  try {
+    const state = JSON.parse(stateJson);
+    if (state && state.version === PROGRESS_VERSION) {
+      unlockedChapters = Math.max(1, Math.min(CHAPTER_ORDER.length, Number(state.unlocked) || 1));
+      if (state.page === 'home' || CHAPTER_ORDER.includes(state.page)) savedPage = state.page;
+      const savedIndex = CHAPTER_ORDER.indexOf(savedPage);
+      if (savedIndex >= unlockedChapters) savedPage = CHAPTER_ORDER[unlockedChapters - 1];
+    }
+  } catch (error) {}
+  progressLoaded = true;
   applyHomeLocks();
+  navigateTo(savedPage);
 }
 
 const CHOICE_FEEDBACK = {
@@ -522,8 +543,8 @@ document.addEventListener('click', event => {
 
 document.addEventListener('DOMContentLoaded', () => {
   shuffleSmartMatching();
-  loadProgress();
   initMadinaAudio();
   initRequiredContentTracking();
   navigateTo('home');
 });
+window.addEventListener('load', loadProgress);
