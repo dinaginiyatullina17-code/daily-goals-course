@@ -195,7 +195,22 @@ function applyHomeLocks() {
 }
 
 function saveProgress(options = {}) {
-  const state = JSON.stringify({ version: PROGRESS_VERSION, unlocked: unlockedChapters, page: currentPage });
+  const viewed = [...document.querySelectorAll('.smart-card, .reason-card, .question-guidance')]
+    .map((item, index) => item.dataset.viewed === 'true' ? index : -1).filter(index => index >= 0);
+  const solved = [...document.querySelectorAll('.choice-grid, .choice-list')]
+    .map((item, index) => item.dataset.solved === 'true' ? index : -1).filter(index => index >= 0);
+  const checked = [...document.querySelectorAll('.understanding-checklist input')]
+    .map((item, index) => item.checked ? index : -1).filter(index => index >= 0);
+  const smartMatching = document.getElementById('smart-matching');
+  const state = JSON.stringify({
+    version: PROGRESS_VERSION,
+    unlocked: unlockedChapters,
+    page: currentPage,
+    viewed,
+    solved,
+    checked,
+    smartSolved: smartMatching?.dataset.solved === 'true'
+  });
   try { localStorage.setItem(PROGRESS_KEY, state); } catch (error) {}
   if (!options.localOnly && window.SCORM && typeof SCORM.set === 'function') {
     try {
@@ -224,6 +239,27 @@ function loadProgress() {
       if (state.page === 'home' || CHAPTER_ORDER.includes(state.page)) savedPage = state.page;
       const savedIndex = CHAPTER_ORDER.indexOf(savedPage);
       if (savedIndex >= unlockedChapters) savedPage = CHAPTER_ORDER[unlockedChapters - 1];
+      const viewedItems = [...document.querySelectorAll('.smart-card, .reason-card, .question-guidance')];
+      if (Array.isArray(state.viewed)) state.viewed.forEach(index => { if (viewedItems[index]) viewedItems[index].dataset.viewed = 'true'; });
+      const choiceGroups = [...document.querySelectorAll('.choice-grid, .choice-list')];
+      if (Array.isArray(state.solved)) state.solved.forEach(index => {
+        const group = choiceGroups[index];
+        if (!group) return;
+        group.dataset.answered = 'true';
+        group.dataset.solved = 'true';
+        group.querySelectorAll('button').forEach(button => { button.disabled = true; });
+      });
+      const checklist = [...document.querySelectorAll('.understanding-checklist input')];
+      if (Array.isArray(state.checked)) state.checked.forEach(index => { if (checklist[index]) checklist[index].checked = true; });
+      if (state.smartSolved) {
+        const matching = document.getElementById('smart-matching');
+        if (matching) matching.dataset.solved = 'true';
+        document.querySelectorAll('#smart-matching select').forEach(select => {
+          select.value = select.dataset.answer;
+          select.disabled = true;
+          select.classList.add('correct');
+        });
+      }
     }
   } catch (error) {}
   progressLoaded = true;
@@ -474,6 +510,7 @@ function initRequiredContentTracking() {
       if (!details.open) return;
       details.dataset.viewed = 'true';
       details.classList.remove('required-attention');
+      if (progressLoaded) saveProgress();
     });
   });
 }
@@ -539,6 +576,15 @@ function completeCourse() {
 
 document.addEventListener('click', event => {
   if (event.target.closest('#ku-complete-button')) completeCourse();
+  if (event.target.closest('.choice-grid button, .choice-list button, .smart-card, .reason-card button, #smart-matching button')) {
+    setTimeout(() => { if (progressLoaded) saveProgress(); }, 0);
+  }
+});
+
+document.addEventListener('change', event => {
+  if (event.target.matches('.understanding-checklist input, #smart-matching select')) {
+    if (progressLoaded) saveProgress();
+  }
 });
 
 document.addEventListener('DOMContentLoaded', () => {
