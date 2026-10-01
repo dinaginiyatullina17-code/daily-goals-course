@@ -11,8 +11,8 @@ const CHAPTER_NAMES = {
   summary: 'Главное по теме'
 };
 
-const PROGRESS_KEY = 'daily_goals_course_progress_v11';
-const PROGRESS_VERSION = 11;
+const PROGRESS_KEY = 'daily_goals_course_progress_v12';
+const PROGRESS_VERSION = 12;
 let currentPage = 'home';
 let unlockedChapters = 1;
 let fadeObserver;
@@ -523,12 +523,19 @@ function printChecklist() {
 }
 
 function completeCourse() {
-  try { localStorage.setItem(`${PROGRESS_KEY}_completed`, 'completed'); } catch (error) {}
+  try { localStorage.setItem(`${PROGRESS_KEY}_completed`, 'passed'); } catch (error) {}
   unlockedChapters = CHAPTER_ORDER.length;
   saveProgress();
   applyHomeLocks();
-  if (window.SCORM && typeof SCORM.complete === 'function') {
-    SCORM.complete();
+  if (window.SCORM && typeof SCORM.set === 'function') {
+    SCORM.set('cmi.core.lesson_status', 'passed');
+    SCORM.set('cmi.core.score.raw', '100');
+    SCORM.set('cmi.core.score.min', '0');
+    SCORM.set('cmi.core.score.max', '100');
+    SCORM.commit();
+    setTimeout(() => {
+      SCORM.finish('logout');
+    }, 100);
   }
   document.getElementById('completion-panel')?.classList.add('show');
   const button = document.getElementById('ku-complete-button');
@@ -553,8 +560,10 @@ document.addEventListener('change', event => {
 
 document.addEventListener('DOMContentLoaded', () => {
   shuffleSmartMatching();
+  resetSmartMatching();
   initMadinaAudio();
   initRequiredContentTracking();
   navigateTo('home');
 });
+window.addEventListener('pageshow', resetSmartMatching);
 window.addEventListener('load', loadProgress);

@@ -84,6 +84,7 @@
       return api.LMSGetValue(key);
     },
     commit: commit,
+    finish: finish,
     complete: function () {
       if (!ready || finished) return false;
       this.set('cmi.core.score.min', '0');
