@@ -11,8 +11,8 @@ const CHAPTER_NAMES = {
   summary: 'Главное по теме'
 };
 
-const PROGRESS_KEY = 'daily_goals_course_progress_v10';
-const PROGRESS_VERSION = 10;
+const PROGRESS_KEY = 'daily_goals_course_progress_v11';
+const PROGRESS_VERSION = 11;
 let currentPage = 'home';
 let unlockedChapters = 1;
 let fadeObserver;
@@ -195,21 +195,10 @@ function applyHomeLocks() {
 }
 
 function saveProgress(options = {}) {
-  const viewed = [...document.querySelectorAll('.smart-card, .reason-card, .question-guidance')]
-    .map((item, index) => item.dataset.viewed === 'true' ? index : -1).filter(index => index >= 0);
-  const solved = [...document.querySelectorAll('.choice-grid, .choice-list')]
-    .map((item, index) => item.dataset.solved === 'true' ? index : -1).filter(index => index >= 0);
-  const checked = [...document.querySelectorAll('.understanding-checklist input')]
-    .map((item, index) => item.checked ? index : -1).filter(index => index >= 0);
-  const smartMatching = document.getElementById('smart-matching');
   const state = JSON.stringify({
     version: PROGRESS_VERSION,
     unlocked: unlockedChapters,
-    page: currentPage,
-    viewed,
-    solved,
-    checked,
-    smartSolved: smartMatching?.dataset.solved === 'true'
+    page: currentPage
   });
   try { localStorage.setItem(PROGRESS_KEY, state); } catch (error) {}
   if (!options.localOnly && window.SCORM && typeof SCORM.set === 'function') {
@@ -235,27 +224,6 @@ function loadProgress() {
     const state = JSON.parse(stateJson);
     if (state && state.version === PROGRESS_VERSION) {
       unlockedChapters = Math.max(1, Math.min(CHAPTER_ORDER.length, Number(state.unlocked) || 1));
-      const viewedItems = [...document.querySelectorAll('.smart-card, .reason-card, .question-guidance')];
-      if (Array.isArray(state.viewed)) state.viewed.forEach(index => { if (viewedItems[index]) viewedItems[index].dataset.viewed = 'true'; });
-      const choiceGroups = [...document.querySelectorAll('.choice-grid, .choice-list')];
-      if (Array.isArray(state.solved)) state.solved.forEach(index => {
-        const group = choiceGroups[index];
-        if (!group) return;
-        group.dataset.answered = 'true';
-        group.dataset.solved = 'true';
-        group.querySelectorAll('button').forEach(button => { button.disabled = true; });
-      });
-      const checklist = [...document.querySelectorAll('.understanding-checklist input')];
-      if (Array.isArray(state.checked)) state.checked.forEach(index => { if (checklist[index]) checklist[index].checked = true; });
-      if (state.smartSolved) {
-        const matching = document.getElementById('smart-matching');
-        if (matching) matching.dataset.solved = 'true';
-        document.querySelectorAll('#smart-matching select').forEach(select => {
-          select.value = select.dataset.answer;
-          select.disabled = true;
-          select.classList.add('correct');
-        });
-      }
     }
   } catch (error) {}
   progressLoaded = true;
