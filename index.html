@@ -8,6 +8,7 @@
   <title>Как управлять достижением целей на день</title>
   <link rel="stylesheet" href="css/kuds.css?v=5">
   <link rel="stylesheet" href="style.css?v=42">
+  <script src="scorm_api.js"></script>
 </head>
 <body>
   <nav id="top-nav" aria-label="Навигация по курсу">
@@ -430,7 +431,7 @@
           <div class="resource-buttons"><a class="btn-secondary" href="output/pdf/goal-control-checklist.pdf?v=4" download="Чек-лист наблюдения за сменой.pdf">↓ Чек-лист наблюдения за сменой</a><button class="btn-secondary" type="button" onclick="printChecklist()">⎙ 5 вопросов для печати</button></div>
         </div>
         <div class="completion-card fade-in">
-          <span class="completion-mark">✓</span><div><h2>Ты прошёл весь маршрут</h2><p>Зафиксируй завершение курса и примени чек-лист уже на следующей смене.</p></div><button class="btn-primary" type="button" onclick="completeCourse()">Завершить курс</button>
+          <span class="completion-mark">✓</span><div><h2>Ты прошёл весь маршрут</h2><p>Зафиксируй завершение курса и примени чек-лист уже на следующей смене.</p></div><button class="btn-primary" id="ku-complete-button" type="button">Завершить курс</button>
         </div>
         <div class="completion-panel" id="completion-panel" role="status"><b>Курс завершён.</b> Результат сохранён. Если окно не закрылось автоматически, закрой его.</div>
       </div>
@@ -438,6 +439,6 @@
   </main>
   <button class="course-back btn-secondary" id="course-back" type="button" onclick="goToPreviousPage()" hidden><span aria-hidden="true">←</span> Назад</button>
 
-  <script src="script.js?v=42"></script>
+  <script src="script.js?v=43"></script>
 </body>
 </html>

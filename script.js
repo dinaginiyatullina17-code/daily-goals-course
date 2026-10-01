@@ -516,6 +516,10 @@ function completeCourse() {
   applyHomeLocks();
 }
 
+document.addEventListener('click', event => {
+  if (event.target.closest('#ku-complete-button')) completeCourse();
+});
+
 document.addEventListener('DOMContentLoaded', () => {
   shuffleSmartMatching();
   loadProgress();
