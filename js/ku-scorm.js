@@ -50,7 +50,10 @@
   function load() {
     const status = lmsGet("cmi.core.lesson_status");
     let json = lmsReady ? lmsGet("cmi.suspend_data") : "";
-    if (!json) json = lsGet();
+    // В LMS её данные являются источником истины. Если администратор удалил
+    // прохождение, пустой suspend_data должен открыть чистый курс, а не
+    // восстановить старое completed из localStorage браузера.
+    if (!lmsReady && !json) json = lsGet();
     try {
       const stored = JSON.parse(json || "null");
       if (stored) { state.unlocked = Math.max(1, Number(stored.unlocked) || 1); state.done = stored.done || {}; state.vars = stored.vars || {}; state.completed = !!stored.completed; }
@@ -73,7 +76,10 @@
     const json = serialize(); lsSet(json);
     if (lmsReady) { writeResult(); lmsSet("cmi.suspend_data", json); lmsSet("cmi.core.session_time", formatSessionTime()); lmsCommit(); }
     document.dispatchEvent(new CustomEvent("ku:completed", { detail: snapshot() }));
-    setTimeout(function () { location.reload(); }, 120);
+    // WebTutor обрабатывает LMSCommit асинхронно. Слишком ранняя перезагрузка
+    // открывает оглавление до того, как LMS зафиксировала passed, и ученику
+    // приходится нажимать «Завершить» повторно.
+    setTimeout(function () { location.reload(); }, 1800);
   }
   function complete() { finishSession(); }
   function bindComplete() { document.querySelectorAll("[data-ku-complete]").forEach((button) => button.addEventListener("click", complete)); }
