@@ -513,3 +513,28 @@ document.addEventListener('DOMContentLoaded', () => {
 });
 window.addEventListener('pageshow', resetSmartMatching);
 document.addEventListener('ku:ready', loadProgress);
+
+// KU Design System image slots: placeholder -> generated 3D image.
+(function initKuImageSlots() {
+  function mount() {
+    document.querySelectorAll('.ku-img[data-ku-img]').forEach(function (slot) {
+      if (slot.dataset.kuImageMounted === '1') return;
+      slot.dataset.kuImageMounted = '1';
+      var base = slot.getAttribute('data-ku-img');
+      var img = document.createElement('img');
+      var extensions = ['webp', 'png', 'jpg', 'jpeg'];
+      var index = 0;
+      img.alt = slot.getAttribute('data-ku-alt') || '';
+      img.addEventListener('load', function () { slot.classList.add('is-loaded'); });
+      img.addEventListener('error', tryNext);
+      slot.prepend(img);
+      function tryNext() {
+        if (index >= extensions.length) { img.removeAttribute('src'); return; }
+        img.src = base + '.' + extensions[index++];
+      }
+      tryNext();
+    });
+  }
+  if (document.readyState === 'loading') document.addEventListener('DOMContentLoaded', mount);
+  else mount();
+}());

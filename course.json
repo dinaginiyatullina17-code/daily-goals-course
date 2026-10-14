@@ -9,5 +9,6 @@
     "resource": "RES_1"
   },
   "previous_zip": "kak_upravlyat_dostizheniem_celey_na_den.zip",
-  "complete_mode": "lms"
+  "complete_mode": "lms",
+  "image_style": "3d"
 }
