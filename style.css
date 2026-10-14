@@ -922,3 +922,22 @@ button:focus-visible, input:focus-visible, textarea:focus-visible { outline-colo
 @media (max-width: 520px) {
   .hero-content h1 { font-size: clamp(2rem, 10.7vw, 2.7rem); }
 }
+
+/* Compact course menu */
+.chapter-grid { gap: var(--ku-space-xs); }
+.chapter-card {
+  min-height: 6.5rem;
+  gap: var(--ku-space-xs);
+  padding: var(--ku-space-s);
+}
+.chapter-copy { gap: var(--ku-space-3xs); }
+.chapter-copy b { font-size: 1.05rem; }
+.chapter-copy small { font-size: 0.82rem; line-height: 1.35; }
+.chapter-num { font-size: 0.82rem; }
+.chapter-arrow { inset-block-start: var(--ku-space-s); inset-inline-end: var(--ku-space-s); font-size: 1.1rem; }
+@media (max-width: 760px) {
+  .chapter-card { min-height: 5.75rem; padding: var(--ku-space-xs); }
+}
+.chapter-card { min-height: 4rem; padding: 0.75rem 1rem; align-items: center; }
+.chapter-copy { padding-inline-end: 1.5rem; }
+.chapter-lock { inset-block-end: auto; inset-block-start: 50%; transform: translateY(-50%); }
