@@ -1,4 +1,4 @@
-﻿<!doctype html>
+<!doctype html>
 <html lang="ru" data-audience="ms" data-direction="restoran" data-ku-course="daily_goals_course_progress_v12">
 <head>
   <meta charset="utf-8">
@@ -7,7 +7,7 @@
   <meta name="description" content="Интерактивный курс о постановке целей и управлении их достижением в течение дня.">
   <title>Как управлять достижением целей на день</title>
   <link rel="stylesheet" href="css/kuds.css?v=5">
-  <link rel="stylesheet" href="style.css?v=43">
+  <link rel="stylesheet" href="style.css?v=44">
 </head>
 <body>
   <nav id="top-nav" aria-label="Навигация по курсу">
@@ -29,8 +29,8 @@
           <p>От общей цели ресторана — к понятным действиям каждого сотрудника.</p>
           <button class="hero-entry ku-btn primary l" type="button" onclick="navigateTo('intro')"><span>Начать</span><i class="ku-ico arrow" aria-hidden="true">→</i></button>
         </div>
-        <figure class="ku-img course-hero-art" data-ku-img="images/hero-shift-leader" data-ku-alt="Менеджер ресторана начинает смену вместе с командой" style="aspect-ratio:4/5">
-          <figcaption class="ku-img__ph"><b>3D-сцена: менеджер начинает смену вместе с командой</b><code>images/hero-shift-leader · 4:5</code></figcaption>
+        <figure class="ku-img course-hero-art" data-ku-img="images/hero-shift-leader" data-ku-alt="Менеджер ресторана начинает смену вместе с командой" style="aspect-ratio:16/9">
+          <figcaption class="ku-img__ph"><b>3D-сцена: менеджер начинает смену вместе с командой</b><code>images/hero-shift-leader · 16:9</code></figcaption>
         </figure>
       </div>
 
@@ -224,9 +224,6 @@
         </div>
       </header>
       <div class="content-wrap lesson-body">
-        <figure class="ku-img fade-in course-scene" data-ku-img="images/smart-goal-coaching" data-ku-alt="Менеджер формулирует сотруднику прилавка конкретную цель по SMART" style="aspect-ratio:16/9">
-          <figcaption class="ku-img__ph"><b>3D-сцена: менеджер ставит сотруднику понятную SMART-цель</b><code>images/smart-goal-coaching · 16:9</code></figcaption>
-        </figure>
         <div class="section-title fade-in"><h2>Как конкретизировать цель на смену</h2></div>
         <div class="smart-intro fade-in"><p>Цели для команды и каждого сотрудника нужно ставить по принципу SMART. Нажми на букву, чтобы увидеть, что именно она проверяет.</p></div>
         <div class="smart-grid fade-in">
@@ -239,12 +236,13 @@
         <div class="smart-detail fade-in" id="smart-detail" aria-live="polite">
           <span>Выбери букву SMART</span><p>Нажми на любую карточку выше — здесь появится объяснение и пример.</p>
         </div>
-        <div class="smart-breakdown fade-in" id="smart-breakdown">
-          <p class="eyebrow">Собери воедино SMART-цель для кассира</p>
-          <p class="smart-annotated-goal">«<span class="smart-mark" data-smart="T">С 9:00 до 11:00</span> продай <span class="smart-mark" data-smart="M">15</span> <span class="smart-mark" data-smart="S">пирожков с вишней</span> — <span class="smart-mark" data-smart="A">на 5 больше твоего обычного результата</span>. Предлагай их как дополнительную продажу к горячему напитку: это поможет <span class="smart-mark" data-smart="R">увеличить средний чек ресторана</span>».</p>
-          <div class="smart-annotated-legend"><span><b>S</b>что продаём</span><span><b>M</b>сколько</span><span><b>A</b>почему достижимо</span><span><b>R</b>зачем ресторану</span><span><b>T</b>к какому времени</span></div>
+        <div class="smart-breakdown fade-in" id="smart-breakdown" hidden>
+          <p class="smart-complete-goal">«С 9:00 до 11:00 продай 15 пирожков с вишней — на 5 больше твоего обычного результата. Предлагай их как дополнительную продажу к горячему напитку: это поможет увеличить средний чек ресторана».</p>
         </div>
 
+        <figure class="ku-img fade-in course-scene" data-ku-img="images/smart-goal-coaching" data-ku-alt="Менеджер формулирует сотруднику прилавка конкретную цель по SMART" style="aspect-ratio:16/9">
+          <figcaption class="ku-img__ph"><b>3D-сцена: менеджер ставит сотруднику понятную SMART-цель</b><code>images/smart-goal-coaching · 16:9</code></figcaption>
+        </figure>
         <div class="quiz-card fade-in">
           <div class="quiz-top"><span>Практика</span><b>02</b></div>
           <h2>Соотнеси части цели с критериями SMART</h2>
@@ -335,11 +333,14 @@
 
         <div class="section-title fade-in"><h2>Что делать, если цели не достигаются?</h2></div>
         <div class="body-copy fade-in"><p>Если через 1–2 часа видно отставание, разберись в причинах.</p></div>
-        <div class="reason-grid fade-in">
-          <article class="reason-card"><button type="button" onclick="toggleReason(this)"><span class="reason-icon">?</span><span><b>Сотрудник не понимает задачу.</b><small>Нажми, чтобы увидеть решение</small></span><i>＋</i></button><div class="reason-body"><p><strong>Признак:</strong> пересказывает цель неверно.</p><p><strong>Решение:</strong> объясни цель ещё раз и попроси повторить.</p></div></article>
-          <article class="reason-card"><button type="button" onclick="toggleReason(this)"><span class="reason-icon">↗</span><span><b>Сотрудник понимает, но не получается выполнить.</b><small>Нажми, чтобы увидеть решение</small></span><i>＋</i></button><div class="reason-body"><p>Спроси, <strong>в чём сложность.</strong> Возможно, нужен другой инструмент (например, использовать треугольник продаж, а не один скрипт).</p><p><strong>Решение:</strong> предложи новый план, убери помехи (соус стоит далеко, скрипт сложный и т.п.).</p></div></article>
-          <article class="reason-card"><button type="button" onclick="toggleReason(this)"><span class="reason-icon">◷</span><span><b>Сотрудник устал.</b><small>Нажми, чтобы увидеть решение</small></span><i>＋</i></button><div class="reason-body"><p>Спроси, <strong>как он себя чувствует.</strong></p><p><strong>Решение:</strong> дай отдохнуть до пика, скорректируй распределение задач.</p></div></article>
-          <article class="reason-card"><button type="button" onclick="toggleReason(this)"><span class="reason-icon">☹</span><span><b>Сотрудник недружелюбен с Гостями.</b><small>Нажми, чтобы увидеть решение</small></span><i>＋</i></button><div class="reason-body"><p><strong>Спроси:</strong> что мешает ему быть внимательным к Гостям и предлагать блюда.</p><p><strong>Решение:</strong> дай корректирующую обратную связь наедине, покажи, как правильно общаться и предлагать.</p></div></article>
+        <div class="reason-carousel fade-in" id="reason-carousel" aria-label="Причины отклонения от цели">
+          <div class="reason-slides">
+            <article class="reason-slide active"><img src="images/reason-not-understood.jpg" alt="Менеджер помогает сотруднику понять задачу"><div class="reason-slide-copy"><span class="reason-kicker">Причина 1</span><h3>Сотрудник не понимает задачу.</h3><p><strong>Признак:</strong> пересказывает цель неверно.</p><p><strong>Решение:</strong> объясни цель ещё раз и попроси повторить.</p></div></article>
+            <article class="reason-slide"><img src="images/reason-cannot-achieve.jpg" alt="Менеджер помогает сотруднику убрать препятствие"><div class="reason-slide-copy"><span class="reason-kicker">Причина 2</span><h3>Сотрудник понимает, но не получается выполнить.</h3><p>Спроси, <strong>в чём сложность.</strong> Возможно, нужен другой инструмент (например, использовать треугольник продаж, а не один скрипт).</p><p><strong>Решение:</strong> предложи новый план, убери помехи (соус стоит далеко, скрипт сложный и т.п.).</p></div></article>
+            <article class="reason-slide"><img src="images/reason-tired.jpg" alt="Менеджер предлагает уставшему сотруднику короткий отдых"><div class="reason-slide-copy"><span class="reason-kicker">Причина 3</span><h3>Сотрудник устал.</h3><p>Спроси, <strong>как он себя чувствует.</strong></p><p><strong>Решение:</strong> дай отдохнуть до пика, скорректируй распределение задач.</p></div></article>
+            <article class="reason-slide"><img src="images/reason-unfriendly.jpg" alt="Менеджер помогает сотруднику улучшить общение с Гостем"><div class="reason-slide-copy"><span class="reason-kicker">Причина 4</span><h3>Сотрудник недружелюбен с Гостями.</h3><p><strong>Спроси:</strong> что мешает ему быть внимательным к Гостям и предлагать блюда.</p><p><strong>Решение:</strong> дай корректирующую обратную связь наедине, покажи, как правильно общаться и предлагать.</p></div></article>
+          </div>
+          <div class="reason-carousel-nav"><button type="button" onclick="changeReasonSlide(-1)" aria-label="Предыдущая причина">←</button><span id="reason-carousel-count">1 / 4</span><button type="button" onclick="changeReasonSlide(1)" aria-label="Следующая причина">→</button></div>
         </div>
 
         <div class="quiz-card fade-in">
@@ -393,9 +394,6 @@
           <div class="reflection-feedback" id="reflection-feedback" aria-live="polite"></div>
         </div>
 
-        <figure class="ku-img fade-in course-scene" data-ku-img="images/finish-team-feedback" data-ku-alt="Менеджер подводит итоги смены и благодарит команду ресторана" style="aspect-ratio:16/9">
-          <figcaption class="ku-img__ph"><b>3D-сцена: команда подводит итоги смены</b><code>images/finish-team-feedback · 16:9</code></figcaption>
-        </figure>
         <div class="section-title fade-in"><h2>Что делать в конце смены</h2></div>
         <div class="body-copy fade-in"><p>Проверь итоги.</p><p>Если каждый сотрудник достиг своей цели, значит, и общая цель выполнена.</p></div>
         <div class="finish-paths fade-in">
@@ -408,6 +406,9 @@
           <div><span>03</span><p>Дай обратную связь каждому.</p></div>
           <div><span>04</span><p>Публично похвали тех, кто справился. Это мотивирует и их, и остальных.</p></div>
         </div>
+        <figure class="ku-img fade-in course-scene" data-ku-img="images/finish-team-feedback" data-ku-alt="Менеджер подводит итоги смены и благодарит команду ресторана" style="aspect-ratio:16/9">
+          <figcaption class="ku-img__ph"><b>3D-сцена: команда подводит итоги смены</b><code>images/finish-team-feedback · 16:9</code></figcaption>
+        </figure>
         <div class="next-row"><button class="btn-primary" type="button" onclick="completeChapter('finish', 'summary')">Собрать главное <span>→</span></button></div>
       </div>
     </section>
@@ -447,7 +448,7 @@
   <button class="course-back btn-secondary" id="course-back" type="button" onclick="goToPreviousPage()" hidden><span aria-hidden="true">←</span> Назад</button>
 
   <script src="js/ku-scorm.js"></script>
-  <script src="script.js?v=50"></script>
+  <script src="script.js?v=51"></script>
 </body>
 </html>
 

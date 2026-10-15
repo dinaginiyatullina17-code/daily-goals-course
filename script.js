@@ -311,6 +311,19 @@ function selectSmart(button, index) {
   button.classList.remove('required-attention');
   const [title, text] = SMART_DETAILS[index];
   document.getElementById('smart-detail').innerHTML = `<span>${title}</span><p>${text}</p>`;
+  const completeGoal = document.getElementById('smart-breakdown');
+  if (completeGoal) completeGoal.hidden = index !== 4;
+}
+
+let reasonSlideIndex = 0;
+
+function changeReasonSlide(delta) {
+  const slides = [...document.querySelectorAll('#reason-carousel .reason-slide')];
+  if (!slides.length) return;
+  reasonSlideIndex = (reasonSlideIndex + delta + slides.length) % slides.length;
+  slides.forEach((slide, index) => slide.classList.toggle('active', index === reasonSlideIndex));
+  const counter = document.getElementById('reason-carousel-count');
+  if (counter) counter.textContent = `${reasonSlideIndex + 1} / ${slides.length}`;
 }
 
 function shuffleInPlace(items) {
