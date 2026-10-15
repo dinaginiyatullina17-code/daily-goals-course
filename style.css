@@ -977,10 +977,15 @@ button:focus-visible, input:focus-visible, textarea:focus-visible { outline-colo
 }
 .course-hero-art.is-loaded .ku-img__ph { display: none; }
 
-/* Compact chapter route */
+/* Course contents: one calm, compact route */
 #course-contents .chapter-grid {
-  grid-template-columns: repeat(4, minmax(0, 1fr));
-  gap: var(--ku-space-xs);
+  grid-template-columns: 1fr;
+  gap: 0;
+  overflow: hidden;
+  border: 1px solid var(--ku-border);
+  border-radius: var(--ku-radius-xl);
+  background: var(--ku-card);
+  box-shadow: var(--ku-shadow-s);
 }
 #course-contents .chapter-grid::before { display: none; }
 #course-contents .chapter-card,
@@ -989,23 +994,35 @@ button:focus-visible, input:focus-visible, textarea:focus-visible { outline-colo
   grid-column: auto;
   min-height: 0;
   height: auto;
-  padding: 0.7rem 0.9rem;
-  border-radius: var(--ku-radius-pill);
+  padding: 0.9rem 1.15rem;
+  border: 0;
+  border-bottom: 1px solid var(--ku-divider);
+  border-radius: 0;
+  background: transparent;
+  box-shadow: none;
   display: grid;
-  grid-template-columns: auto minmax(0, 1fr) auto;
-  gap: 0.6rem;
+  grid-template-columns: 2.65rem minmax(0, 1fr) auto;
+  gap: 0.9rem;
   align-items: center;
+  text-align: left;
 }
+#course-contents .chapter-card:last-child { border-bottom: 0; }
+#course-contents .chapter-card:hover { transform: none; background: var(--ku-brand-soft); box-shadow: none; }
 #course-contents .chapter-card::before,
 #course-contents .chapter-card::after { display: none; }
-#course-contents .chapter-num { position: static; font-size: 0.75rem; }
-#course-contents .chapter-copy { padding: 0; }
-#course-contents .chapter-copy b { font-size: 0.95rem; line-height: 1.15; }
-#course-contents .chapter-copy small { display: none; }
+#course-contents .chapter-num { position: static; display: grid; place-items: center; inline-size: 2.45rem; block-size: 2.45rem; border-radius: 50%; background: var(--ku-brand); color: var(--ku-brand-on); font-size: 0.78rem; }
+#course-contents .chapter-copy { padding: 0; display: grid; grid-template-columns: minmax(10rem, .8fr) minmax(14rem, 1.2fr); align-items: center; gap: var(--ku-space-m); }
+#course-contents .chapter-copy b { font-size: 1rem; line-height: 1.2; }
+#course-contents .chapter-copy small { display: block !important; color: var(--ku-text-muted); font-size: 0.86rem; line-height: 1.35; }
+#course-contents .chapter-cta { display: none; }
 #course-contents .chapter-arrow,
 #course-contents .chapter-lock { position: static; transform: none; }
-#course-contents .chapter-card.locked .chapter-arrow::before { content: "🔒"; font-size: 0.9rem; }
+#course-contents .chapter-card.locked { background: var(--ku-surface-2); opacity: .68; }
+#course-contents .chapter-card.locked .chapter-arrow::before { content: "закрыто"; font-size: 0.68rem; letter-spacing: .06em; text-transform: uppercase; }
 #course-contents .chapter-card.locked .chapter-lock { display: none; }
+
+.course-scene { overflow: hidden; }
+.course-scene > img { inline-size: 100%; block-size: 100%; object-fit: contain !important; object-position: center; background: var(--ku-brand-soft); }
 
 .smart-breakdown[hidden] { display: none !important; }
 .smart-complete-goal {
@@ -1028,7 +1045,7 @@ button:focus-visible, input:focus-visible, textarea:focus-visible { outline-colo
 }
 .reason-slide { display: none; grid-template-columns: minmax(0, 1.08fr) minmax(16rem, 0.92fr); min-height: 25rem; }
 .reason-slide.active { display: grid; }
-.reason-slide img { inline-size: 100%; block-size: 100%; min-height: 25rem; object-fit: cover; }
+.reason-slide img { inline-size: 100%; block-size: 100%; min-height: 25rem; object-fit: contain; object-position: center; background: var(--ku-brand-soft); }
 .reason-slide-copy { display: grid; align-content: center; gap: var(--ku-space-s); padding: clamp(1.25rem, 3vw, 2.5rem); }
 .reason-slide-copy h3,
 .reason-slide-copy p { margin: 0; }
@@ -1038,19 +1055,27 @@ button:focus-visible, input:focus-visible, textarea:focus-visible { outline-colo
 #reason-carousel-count { min-inline-size: 3.5rem; text-align: center; font-weight: 800; }
 
 @media (max-width: 900px) {
-  #course-contents .chapter-grid { grid-template-columns: repeat(2, minmax(0, 1fr)); }
+  #course-contents .chapter-copy { grid-template-columns: 1fr; gap: 0.2rem; }
 }
 @media (max-width: 760px) {
-  .hero-placeholder { min-height: calc(100svh - 3.6rem); }
+  .hero-placeholder { min-height: auto; padding-block: var(--ku-space-m); display: flex; flex-direction: column; }
   .course-hero-art,
-  .course-hero-art.is-loaded { position: absolute; inset: 0; inline-size: 100%; block-size: 100%; margin: 0; }
-  .course-hero-art > img { object-fit: cover; object-position: 66% center; }
-  .hero-placeholder::before { background: linear-gradient(180deg, color-mix(in srgb, var(--ku-bg) 90%, transparent) 0%, color-mix(in srgb, var(--ku-bg) 64%, transparent) 48%, transparent 78%); }
+  .course-hero-art.is-loaded { position: relative; inset: auto; z-index: 0; order: 2; inline-size: min(100% - 2rem, 48rem); block-size: auto; aspect-ratio: 16 / 9; margin: 0 auto; }
+  .course-hero-art > img { object-fit: contain; object-position: center; }
+  .hero-content { order: 1; padding-block: var(--ku-space-l) var(--ku-space-m); }
+  .hero-placeholder::before { background: var(--ku-bg); }
   .reason-slide.active { grid-template-columns: 1fr; }
   .reason-slide,
   .reason-slide img { min-height: 0; }
   .reason-slide img { aspect-ratio: 16 / 10; }
 }
 @media (max-width: 520px) {
+  .hero-content { inline-size: calc(100% - 2rem); max-inline-size: 100%; margin-inline: auto; }
+  .hero-content h1 { font-size: clamp(1.7rem, 8.3vw, 2.05rem); letter-spacing: -0.045em; overflow-wrap: anywhere; }
+  .hero-content p { max-inline-size: 100%; font-size: 0.92rem; overflow-wrap: anywhere; }
   #course-contents .chapter-grid { grid-template-columns: 1fr; }
+  #course-contents .chapter-card,
+  #course-contents .chapter-card.wide,
+  #course-contents .chapter-card:nth-child(n) { grid-template-columns: 2.4rem minmax(0, 1fr) auto; padding: 0.8rem; }
+  #course-contents .chapter-copy small { font-size: 0.78rem; }
 }
