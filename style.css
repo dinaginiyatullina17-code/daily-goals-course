@@ -809,7 +809,7 @@ button:focus-visible, input:focus-visible, textarea:focus-visible { outline-colo
 .funnel-stage::after { content: ""; position: absolute; inset: auto 7% .35rem; height: .22rem; border-radius: 999px; background: rgba(255,255,255,.5); }
 .funnel-goal { width: 43%; background: linear-gradient(135deg, #7b61ff, #d92d9b); color: #fff; }
 .funnel-metrics { width: 61%; background: linear-gradient(135deg, #76d8ff, #9ba8ff); }
-.funnel-zones { width: 80%; background: linear-gradient(135deg, #ffd36e, #ff9f68); }
+.funnel-zones { width: 100%; background: linear-gradient(135deg, #ffd36e, #ff9f68); }
 .funnel-tasks { width: 100%; background: linear-gradient(135deg, #9ce7ca, #79d8ad); }
 .funnel-number { display: grid; place-items: center; flex: 0 0 2.4rem; width: 2.4rem; height: 2.4rem; border: 2px solid rgba(255,255,255,.78); border-radius: 50%; background: rgba(255,255,255,.9); color: #5639bd; box-shadow: 0 .35rem .8rem rgba(49,35,112,.16); font-weight: 900; }
 .funnel-goal .funnel-number { background: #fff; color: #7b3fd1; }
@@ -830,7 +830,7 @@ button:focus-visible, input:focus-visible, textarea:focus-visible { outline-colo
 @media (max-width: 680px) {
   .funnel-goal { width: 72%; }
   .funnel-metrics { width: 82%; }
-  .funnel-zones { width: 92%; }
+  .funnel-zones { width: 100%; }
   .funnel-tasks { width: 100%; }
   .funnel-stage { padding: 1rem 1.25rem; border-radius: 1.1rem; }
   .funnel-grid { grid-template-columns: 1fr; }
