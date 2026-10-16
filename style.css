@@ -819,9 +819,9 @@ button:focus-visible, input:focus-visible, textarea:focus-visible { outline-colo
 .funnel-stage li { padding: .4rem .65rem; border: 1px solid rgba(255,255,255,.7); border-radius: var(--ku-radius-pill); background: rgba(255,255,255,.68); box-shadow: inset 0 1px 0 #fff; }
 .funnel-stage-content { min-width: 0; width: 100%; }
 .funnel-grid { display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: .75rem; }
-.funnel-grid article { padding: .9rem; border: 1px solid rgba(255,255,255,.75); border-radius: var(--ku-radius-m); background: rgba(255,255,255,.78); box-shadow: 0 .35rem .9rem rgba(49,35,112,.1); }
+.funnel-grid article { min-width: 0; padding: .9rem; border: 1px solid rgba(255,255,255,.75); border-radius: var(--ku-radius-m); background: rgba(255,255,255,.78); box-shadow: 0 .35rem .9rem rgba(49,35,112,.1); }
 .funnel-grid b { display: block; margin-bottom: .4rem; color: var(--ku-brand-strong); }
-.funnel-grid p { color: var(--ku-text-soft); font-size: .9rem; }
+.funnel-grid p { max-width: 100%; color: var(--ku-text-soft); font-size: .9rem; overflow-wrap: anywhere; word-break: normal; hyphens: auto; }
 .funnel-arrow { position: relative; z-index: 2; display: grid; place-items: center; width: 2.2rem; height: 2.2rem; margin: .45rem auto; border: 2px solid #fff; border-radius: 50%; background: linear-gradient(135deg, #ff4c92, #7b61ff); color: #fff; text-align: center; font-size: 1.3rem; font-weight: 900; line-height: 1; box-shadow: 0 .35rem .8rem rgba(76,49,164,.25); }
 .goal-funnel blockquote { margin: 1.25rem auto 0; padding: 1rem 1.25rem; border-left: .25rem solid var(--ku-brand); background: var(--ku-surface); font-weight: 700; line-height: 1.55; }
 .shift-path-title { margin: 3.5rem 0 1.5rem; text-align: center; }
