@@ -803,24 +803,26 @@ button:focus-visible, input:focus-visible, textarea:focus-visible { outline-colo
 .brave-report figcaption { padding: 1rem 1.25rem; color: var(--ku-text-soft); line-height: 1.55; }
 .brave-report figcaption strong { color: var(--ku-text); }
 
-.goal-funnel { margin: 2.5rem 0; padding: clamp(1.25rem, 3vw, 2.5rem); border: 1px solid var(--ku-border); border-radius: var(--ku-radius-xl); background: linear-gradient(180deg, var(--ku-bg), var(--ku-brand-soft)); overflow: hidden; }
+.goal-funnel { margin: 2.5rem 0; padding: clamp(1.5rem, 4vw, 3rem); border: 1px solid color-mix(in srgb, var(--ku-brand) 20%, var(--ku-border)); border-radius: var(--ku-radius-xl); background: radial-gradient(circle at 15% 8%, rgba(255,255,255,.95), transparent 24%), linear-gradient(145deg, #f2efff 0%, #fff7ed 48%, #effcf8 100%); overflow: hidden; perspective: 900px; }
 .goal-funnel > h2 { margin: 0 0 1.5rem; text-align: center; font-size: clamp(1.7rem, 3vw, 2.5rem); }
-.funnel-stage { position: relative; display: flex; gap: 1rem; margin: 0 auto; padding: 1.15rem clamp(1.5rem, 4vw, 3rem); border: 0; background: var(--ku-card); box-shadow: var(--ku-shadow-xs); clip-path: polygon(5% 0, 95% 0, 100% 100%, 0 100%); }
-.funnel-goal { width: 46%; justify-content: center; background: var(--ku-brand); color: var(--ku-brand-on); }
-.funnel-metrics { width: 62%; background: color-mix(in srgb, var(--ku-brand) 16%, var(--ku-card)); }
-.funnel-zones { width: 80%; background: color-mix(in srgb, var(--ku-brand) 9%, var(--ku-card)); }
-.funnel-tasks { width: 100%; background: var(--ku-card); }
-.funnel-number { display: grid; place-items: center; flex: 0 0 2.25rem; width: 2.25rem; height: 2.25rem; border-radius: 50%; background: var(--ku-contrast); color: var(--ku-contrast-on); font-weight: 800; }
+.funnel-stage { position: relative; display: flex; gap: 1rem; margin: 0 auto; padding: 1.2rem clamp(1.5rem, 4vw, 3rem) 1.45rem; border: 1px solid rgba(255,255,255,.65); color: #231942; box-shadow: 0 .75rem 0 rgba(49,35,112,.14), 0 1.2rem 2rem rgba(49,35,112,.16), inset 0 1px 0 rgba(255,255,255,.8); clip-path: polygon(6% 0, 94% 0, 100% 100%, 0 100%); transform: rotateX(1.5deg); transform-origin: center bottom; }
+.funnel-stage::after { content: ""; position: absolute; inset: auto 7% .35rem; height: .22rem; border-radius: 999px; background: rgba(255,255,255,.5); }
+.funnel-goal { width: 43%; justify-content: center; background: linear-gradient(135deg, #7b61ff, #d92d9b); color: #fff; }
+.funnel-metrics { width: 61%; background: linear-gradient(135deg, #76d8ff, #9ba8ff); }
+.funnel-zones { width: 80%; background: linear-gradient(135deg, #ffd36e, #ff9f68); }
+.funnel-tasks { width: 100%; background: linear-gradient(135deg, #9ce7ca, #79d8ad); }
+.funnel-number { display: grid; place-items: center; flex: 0 0 2.4rem; width: 2.4rem; height: 2.4rem; border: 2px solid rgba(255,255,255,.78); border-radius: 50%; background: rgba(255,255,255,.9); color: #5639bd; box-shadow: 0 .35rem .8rem rgba(49,35,112,.16); font-weight: 900; }
+.funnel-goal .funnel-number { background: #fff; color: #7b3fd1; }
 .funnel-stage h3 { margin: .25rem 0 .65rem; font-size: 1.15rem; }
 .funnel-stage p { margin: 0; line-height: 1.5; }
 .funnel-stage ul { display: flex; flex-wrap: wrap; gap: .45rem; margin: 0; padding: 0; list-style: none; line-height: 1.45; }
-.funnel-stage li { padding: .4rem .65rem; border-radius: var(--ku-radius-pill); background: color-mix(in srgb, var(--ku-surface) 82%, transparent); }
+.funnel-stage li { padding: .4rem .65rem; border: 1px solid rgba(255,255,255,.7); border-radius: var(--ku-radius-pill); background: rgba(255,255,255,.68); box-shadow: inset 0 1px 0 #fff; }
 .funnel-stage-content { min-width: 0; width: 100%; }
 .funnel-grid { display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: .75rem; }
-.funnel-grid article { padding: .9rem; border-radius: var(--ku-radius-m); background: var(--ku-bg); }
+.funnel-grid article { padding: .9rem; border: 1px solid rgba(255,255,255,.75); border-radius: var(--ku-radius-m); background: rgba(255,255,255,.78); box-shadow: 0 .35rem .9rem rgba(49,35,112,.1); }
 .funnel-grid b { display: block; margin-bottom: .4rem; color: var(--ku-brand-strong); }
 .funnel-grid p { color: var(--ku-text-soft); font-size: .9rem; }
-.funnel-arrow { display: grid; place-items: center; width: 2rem; height: 2rem; margin: .2rem auto; border-radius: 50%; background: var(--ku-surface); color: var(--ku-brand); text-align: center; font-size: 1.3rem; font-weight: 800; line-height: 1; box-shadow: var(--ku-shadow-xs); }
+.funnel-arrow { position: relative; z-index: 2; display: grid; place-items: center; width: 2.2rem; height: 2.2rem; margin: .1rem auto -.15rem; border: 2px solid #fff; border-radius: 50%; background: linear-gradient(135deg, #ff4c92, #7b61ff); color: #fff; text-align: center; font-size: 1.3rem; font-weight: 900; line-height: 1; box-shadow: 0 .35rem .8rem rgba(76,49,164,.25); }
 .goal-funnel blockquote { margin: 1.25rem auto 0; padding: 1rem 1.25rem; border-left: .25rem solid var(--ku-brand); background: var(--ku-surface); font-weight: 700; line-height: 1.55; }
 .shift-path-title { margin: 3.5rem 0 1.5rem; text-align: center; }
 .shift-path-title h2 { margin: 0; font-size: clamp(1.6rem, 3vw, 2.25rem); }
@@ -980,13 +982,15 @@ button:focus-visible, input:focus-visible, textarea:focus-visible { outline-colo
 
 /* Keep the cover copy inside the calm area of the artwork. */
 #page-home .hero-content {
-  inline-size: min(calc(100% - 5rem), 1280px);
+  inline-size: min(21rem, calc(100% - 3rem));
+  margin-inline: clamp(1.5rem, 4vw, 4.5rem) auto;
 }
 #page-home .hero-content > * {
-  max-inline-size: min(34vw, 28rem);
+  max-inline-size: 21rem;
 }
 #page-home .hero-content h1 {
-  font-size: clamp(2.55rem, 4.6vw, 4.5rem);
+  font-size: clamp(2.35rem, 3.6vw, 3.55rem);
+  line-height: .98;
 }
 
 /* Course contents: one calm, compact route */
