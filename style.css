@@ -972,7 +972,7 @@ button:focus-visible, input:focus-visible, textarea:focus-visible { outline-colo
 .course-hero-art > img {
   inline-size: 100%;
   block-size: 100%;
-  object-fit: contain;
+  object-fit: cover;
   object-position: center;
 }
 .course-hero-art.is-loaded .ku-img__ph { display: none; }
@@ -1043,9 +1043,9 @@ button:focus-visible, input:focus-visible, textarea:focus-visible { outline-colo
   background: var(--ku-surface);
   box-shadow: var(--ku-shadow-m);
 }
-.reason-slide { display: none; grid-template-columns: minmax(0, 1.08fr) minmax(16rem, 0.92fr); min-height: 25rem; }
+.reason-slide { display: none; grid-template-columns: minmax(0, 3fr) minmax(20rem, 2fr); }
 .reason-slide.active { display: grid; }
-.reason-slide img { inline-size: 100%; block-size: 100%; min-height: 25rem; object-fit: contain; object-position: center; background: var(--ku-brand-soft); }
+.reason-slide img { inline-size: 100%; block-size: auto; aspect-ratio: 16 / 9; object-fit: cover; object-position: center; background: var(--ku-brand-soft); }
 .reason-slide-copy { display: grid; align-content: center; gap: var(--ku-space-s); padding: clamp(1.25rem, 3vw, 2.5rem); }
 .reason-slide-copy h3,
 .reason-slide-copy p { margin: 0; }
