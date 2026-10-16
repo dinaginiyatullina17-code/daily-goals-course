@@ -805,9 +805,9 @@ button:focus-visible, input:focus-visible, textarea:focus-visible { outline-colo
 
 .goal-funnel { margin: 2.5rem 0; padding: clamp(1.5rem, 4vw, 3rem); border: 1px solid color-mix(in srgb, var(--ku-brand) 20%, var(--ku-border)); border-radius: var(--ku-radius-xl); background: radial-gradient(circle at 15% 8%, rgba(255,255,255,.95), transparent 24%), linear-gradient(145deg, #f2efff 0%, #fff7ed 48%, #effcf8 100%); overflow: hidden; perspective: 900px; }
 .goal-funnel > h2 { margin: 0 0 1.5rem; text-align: center; font-size: clamp(1.7rem, 3vw, 2.5rem); }
-.funnel-stage { position: relative; display: flex; gap: 1rem; margin: 0 auto; padding: 1.2rem clamp(1.5rem, 4vw, 3rem) 1.45rem; border: 1px solid rgba(255,255,255,.65); color: #231942; box-shadow: 0 .75rem 0 rgba(49,35,112,.14), 0 1.2rem 2rem rgba(49,35,112,.16), inset 0 1px 0 rgba(255,255,255,.8); clip-path: polygon(6% 0, 94% 0, 100% 100%, 0 100%); transform: rotateX(1.5deg); transform-origin: center bottom; }
+.funnel-stage { position: relative; display: grid; grid-template-columns: 2.4rem minmax(0, 1fr); align-items: start; gap: 1rem; box-sizing: border-box; margin: 0 auto; padding: 1.2rem clamp(1.5rem, 4vw, 3rem) 1.45rem; border: 1px solid rgba(255,255,255,.65); color: #231942; box-shadow: 0 .65rem 0 rgba(49,35,112,.14), 0 1rem 1.6rem rgba(49,35,112,.14), inset 0 1px 0 rgba(255,255,255,.8); clip-path: polygon(6% 0, 94% 0, 100% 100%, 0 100%); }
 .funnel-stage::after { content: ""; position: absolute; inset: auto 7% .35rem; height: .22rem; border-radius: 999px; background: rgba(255,255,255,.5); }
-.funnel-goal { width: 43%; justify-content: center; background: linear-gradient(135deg, #7b61ff, #d92d9b); color: #fff; }
+.funnel-goal { width: 43%; background: linear-gradient(135deg, #7b61ff, #d92d9b); color: #fff; }
 .funnel-metrics { width: 61%; background: linear-gradient(135deg, #76d8ff, #9ba8ff); }
 .funnel-zones { width: 80%; background: linear-gradient(135deg, #ffd36e, #ff9f68); }
 .funnel-tasks { width: 100%; background: linear-gradient(135deg, #9ce7ca, #79d8ad); }
@@ -822,7 +822,7 @@ button:focus-visible, input:focus-visible, textarea:focus-visible { outline-colo
 .funnel-grid article { padding: .9rem; border: 1px solid rgba(255,255,255,.75); border-radius: var(--ku-radius-m); background: rgba(255,255,255,.78); box-shadow: 0 .35rem .9rem rgba(49,35,112,.1); }
 .funnel-grid b { display: block; margin-bottom: .4rem; color: var(--ku-brand-strong); }
 .funnel-grid p { color: var(--ku-text-soft); font-size: .9rem; }
-.funnel-arrow { position: relative; z-index: 2; display: grid; place-items: center; width: 2.2rem; height: 2.2rem; margin: .1rem auto -.15rem; border: 2px solid #fff; border-radius: 50%; background: linear-gradient(135deg, #ff4c92, #7b61ff); color: #fff; text-align: center; font-size: 1.3rem; font-weight: 900; line-height: 1; box-shadow: 0 .35rem .8rem rgba(76,49,164,.25); }
+.funnel-arrow { position: relative; z-index: 2; display: grid; place-items: center; width: 2.2rem; height: 2.2rem; margin: .45rem auto; border: 2px solid #fff; border-radius: 50%; background: linear-gradient(135deg, #ff4c92, #7b61ff); color: #fff; text-align: center; font-size: 1.3rem; font-weight: 900; line-height: 1; box-shadow: 0 .35rem .8rem rgba(76,49,164,.25); }
 .goal-funnel blockquote { margin: 1.25rem auto 0; padding: 1rem 1.25rem; border-left: .25rem solid var(--ku-brand); background: var(--ku-surface); font-weight: 700; line-height: 1.55; }
 .shift-path-title { margin: 3.5rem 0 1.5rem; text-align: center; }
 .shift-path-title h2 { margin: 0; font-size: clamp(1.6rem, 3vw, 2.25rem); }
@@ -980,6 +980,14 @@ button:focus-visible, input:focus-visible, textarea:focus-visible { outline-colo
 }
 .course-hero-art.is-loaded .ku-img__ph { display: none; }
 
+#page-home .hero-placeholder::before {
+  display: block;
+  inset: 0;
+  z-index: 0;
+  width: auto;
+  background: linear-gradient(90deg, rgba(25,14,67,.94) 0%, rgba(38,22,92,.88) 22%, rgba(54,31,118,.58) 34%, transparent 46%);
+}
+
 /* Keep the cover copy inside the calm area of the artwork. */
 #page-home .hero-content {
   inline-size: min(21rem, calc(100% - 3rem));
@@ -992,6 +1000,8 @@ button:focus-visible, input:focus-visible, textarea:focus-visible { outline-colo
   font-size: clamp(2.35rem, 3.6vw, 3.55rem);
   line-height: .98;
 }
+#page-home .hero-content h1,
+#page-home .hero-content p { color: #fff !important; text-shadow: 0 2px 12px rgba(8,4,31,.35); }
 
 /* Course contents: one calm, compact route */
 #course-contents .chapter-grid {
