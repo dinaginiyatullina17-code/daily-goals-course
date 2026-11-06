@@ -543,7 +543,7 @@ document.addEventListener('ku:ready', loadProgress);
       slot.prepend(img);
       function tryNext() {
         if (index >= extensions.length) { img.removeAttribute('src'); return; }
-        img.src = base + '.' + extensions[index++];
+        img.src = base + '.' + extensions[index++] + '?v=ears1';
       }
       tryNext();
     });
